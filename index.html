@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<!-- Make page device resoponsive -->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+		<link href="styles.css" rel="stylesheet">
+		<script src="main.js"></script>
+		<title>Home - Friends Forever</title>
+	</head>
+
+	<body>
+		<!-- Include header/navbar -->
+		<header id="include_header"></header>
+
+		<main>
+			<!-- Add Carousel with pictures -->
+			<div id="friends-carousel" class="carousel slide" data-bs-ride="carousel">
+				<div class="carousel-indicators c-indicator">
+					<button type="button" data-bs-target="#friends-carousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+					<button type="button" data-bs-target="#friends-carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+					<button type="button" data-bs-target="#friends-carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+					<button type="button" data-bs-target="#friends-carousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+				</div>
+				<div class="carousel-inner">
+					<div class="carousel-item active">
+						<img src="img/friends_car01.png" class="d-block w-100" alt="Slide 1">
+					</div>
+					<div class="carousel-item">
+						<img src="img/friends_car02.png" class="d-block w-100" alt="Slide 2">
+					</div>
+					<div class="carousel-item">
+						<img src="img/friends_car03.png" class="d-block w-100" alt="Slide 3">
+					</div>
+					<div class="carousel-item">
+						<img src="img/friends_car04.png" class="d-block w-100" alt="Slide 3">
+					</div>
+				</div>
+				<button class="carousel-control-prev" type="button" data-bs-target="#friends-carousel" data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Previous</span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#friends-carousel" data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Next</span>
+				</button>
+			</div>
+
+			<!-- Text Paragraphs with Picture -->
+			<div class="container">
+				<div class="standard-textp"></div>
+				<h1 class="friends-font margin-bottom-10">Friends - One of the most popular sitcoms ever aired</h1>
+				<div class="standard-textp">
+					Friends is one of the most popular sitcoms of all time. It aired from 1994 to 2004.
+					The show follows the lives of the six friends Monica Geller, Ross Geller, Chandler Bing, Joey Tribbiani, Rachel Green,
+					and Phoebe Buffay, who live in Manhattan, New York City.
+					The central premise of the show revolves around the group of friends navigating their personal and professional lives while
+					sharing countless humorous and heartwarming moments.
+					The series explores various themes such as friendship, love, career aspirations, and the challenges of adult life.
+				</div>
+				<div class="img-right-row">
+					<div class="img-right-column">
+						<h1 class="friends-font margin-bottom-10">Our six lovely friends</h1>
+						<div class="standard-textp">
+							The characters each have distinct personalities and storylines. Monica is known for her neatness and perfectionism,
+							Ross for his intelligence and romantic misadventures, Chandler for his sarcastic humor, Joey for his acting career
+							and womanizing tendencies, Rachel for her fashion sense and journey to independence, and Phoebe for her
+							offbeat and eccentric nature.
+						</div>
+						<h1 class="friends-font margin-bottom-10">20 years after the last episode - Still immense popularity</h1>
+						<div class="standard-textp">
+							The sitcom became a cultural phenomenon and achieved immense popularity during its original run.
+							It garnered a loyal fan base and received critical acclaim for its writing, ensemble cast performances,
+							and relatable portrayal of young adult life. Even after the show ended, "Friends" has remained popular through syndication
+							and streaming platforms, continuing to attract new generations of viewers.
+						</div>
+					</div>
+					<div>
+						<img src="img/friends_pic07.webp" class="img-right" id="friends_pic07" alt="Picture of the Friends Characters">
+					</div>
+				</div>
+				<h1 class="friends-font margin-bottom-10">You will also fall in love</h1>
+				<div class="standard-textp">
+					This website is dedicated to everyone who fell in love with our six friends. It is also dedicated to everyone, who is new
+					to the Friends-Universe. We guarantee: You will also fall in love with Monica, Ross, Chandler, Joey, Rachel and Phoebe!
+				</div>
+			</div>
+
+			<!-- Flex Image Grid with Characters -->
+			<div class="container" id="char-grid">
+				<div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center">
+					<div class="col">
+						<div class="card shadow-lg">
+							<img src="img/chandler-free.png" class="card-img-top char-card-img" alt="Image of Chandler Bing">
+							<div class="card-body text-center">
+								<h5 class="card-title friends-font">Chandler</h5>
+								<p class="card-text">The funny one</p>
+								<a href="chandler.html" class="btn btn-secondary">More about Chandler</a>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card shadow-lg">
+							<img src="img/joey-free.png" class="card-img-top char-card-img" alt="Image of Joey Tribbiani">
+							<div class="card-body text-center">
+								<h5 class="card-title friends-font">Joey</h5>
+								<p class="card-text">The womanizer</p>
+								<a href="joey.html" class="btn btn-secondary">More about Joey</a>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card shadow-lg">
+							<img src="img/monica-free.png" class="card-img-top char-card-img" alt="Image of Monica Geller">
+							<div class="card-body text-center">
+								<h5 class="card-title friends-font">Monica</h5>
+								<p class="card-text">The lovely perfectionist</p>
+								<a href="monica.html" class="btn btn-secondary">More about Monica</a>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card shadow-lg">
+							<img src="img/phoebe-free.png" class="card-img-top char-card-img" alt="Image of Phoebe Buffay">
+							<div class="card-body text-center">
+								<h5 class="card-title friends-font">Phoebe</h5>
+								<p class="card-text">The crazy one</p>
+								<a href="phoebe.html" class="btn btn-secondary">More about Phoebe</a>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card shadow-lg">
+							<img src="img/rachel-free.png" class="card-img-top char-card-img" alt="Image of Rachel Green">
+							<div class="card-body text-center">
+								<h5 class="card-title friends-font">Rachel</h5>
+								<p class="card-text">The cute growing up girl</p>
+								<a href="rachel.html" class="btn btn-secondary">More about Rachel</a>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card shadow-lg">
+							<img src="img/ross-free.png" class="card-img-top char-card-img" alt="Image of Ross Geller">
+							<div class="card-body text-center">
+								<h5 class="card-title friends-font">Ross</h5>
+								<p class="card-text">The marriage guy</p>
+								<a href="ross.html" class="btn btn-secondary">More about Ross</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="standard-textp"></div>
+
+			<!-- Include Quiz Modal Pop Up -->
+			<div id="include_QuizModal"></div>
+			<div class="page-overlay"></div>
+		</main>
+
+		<!-- Include footer -->
+		<div id="include_footer"></div>
+
+	</body>
+</html>
