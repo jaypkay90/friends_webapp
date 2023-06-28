@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+	Home
+{% endblock %}
+
+{% block main %}
+	<!-- Container with Character Image and personal information -->
+	<div class="container char-cont">
+		<div class="card bg-secondary bg-gradient bg-opacity-50">
+			<div class="row row-cols-1 row-cols-sm-2 justify-content-center">
+				<div class="row row-cols-1 align-items-end">
+					<div class="col text-center char-cont-margin">
+						<h2 class="friends-font">Chandler</h2>
+					</div>
+					<div class="col text-center">
+						<img src="img/chandler-free.png" class="char-card-img" alt="Picture of Chandler">
+					</div>
+				</div>
+				<div class="col">
+					<h6 class="friends-font mt-3 mb-auto mx-3">Full Name</h6>
+					<ul class="char-details font-arial">
+						<li>Chandler Muriel Bing</li>
+					</ul>
+					<h6 class="friends-font my-auto mx-3">Day of Birth</h6>
+					<ul class="char-details font-arial">
+						<li>1968 (Day and month unknown)</li>
+					</ul>
+					<h6 class="friends-font my-auto mx-3">Gender</h6>
+					<ul class="char-details font-arial">
+						<li>Male</li>
+					</ul>
+					<h6 class="friends-font my-auto mx-3">Spouses</h6>
+					<ul class="char-details font-arial">
+						<li>Monica Geller (2001)</li>
+					</ul>
+					<h6 class="friends-font my-auto mx-3">Main Job</h6>
+					<ul class="char-details font-arial">
+						<li>Statistical analyst and data reconfigurator</li>
+					</ul>
+					<h6 class="friends-font my-auto mx-3">Portrayed by</h6>
+					<ul class="char-details font-arial">
+						<li>Matthew Perry</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="standard-textp"></div>
+
+	<!-- Include Quiz Modal Pop Up -->
+	<div id="include_QuizModal"></div>
+	<div class="page-overlay"></div>
+{% endblock %}
