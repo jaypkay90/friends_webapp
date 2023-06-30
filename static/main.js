@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	function main() {
 		const doc_title = document.title;
-		include_header();
-		include_footer();
 		// If Placeholder for QuizModal is on the page
 		if (document.getElementById('include_QuizModal')) {
 			// Fill placeholder in HTML doc with code for Quiz modal

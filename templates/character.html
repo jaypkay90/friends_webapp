@@ -1,50 +1,82 @@
 {% extends "layout.html" %}
 
 {% block title %}
-	Home
+	{{ details["first_name"] }}
 {% endblock %}
 
 {% block main %}
+	<div class="standard-textp"></div>
 	<!-- Container with Character Image and personal information -->
 	<div class="container char-cont">
 		<div class="card bg-secondary bg-gradient bg-opacity-50">
 			<div class="row row-cols-1 row-cols-sm-2 justify-content-center">
 				<div class="row row-cols-1 align-items-end">
 					<div class="col text-center char-cont-margin">
-						<h2 class="friends-font">Chandler</h2>
+						<h2 class="friends-font">{{ details["first_name"] }}</h2>
 					</div>
 					<div class="col text-center">
-						<img src="img/chandler-free.png" class="char-card-img" alt="Picture of Chandler">
+						<img src="{{ url_for('static', filename='img/' + details['char_picture']) }}" class="char-card-img" alt="Picture of {{ details['first_name'] }}">
 					</div>
 				</div>
 				<div class="col">
 					<h6 class="friends-font mt-3 mb-auto mx-3">Full Name</h6>
 					<ul class="char-details font-arial">
-						<li>Chandler Muriel Bing</li>
+						<li>{{ details["full_name"] }}</li>
 					</ul>
 					<h6 class="friends-font my-auto mx-3">Day of Birth</h6>
 					<ul class="char-details font-arial">
-						<li>1968 (Day and month unknown)</li>
+						<li>{{ details["birthday"] }}</li>
 					</ul>
 					<h6 class="friends-font my-auto mx-3">Gender</h6>
 					<ul class="char-details font-arial">
-						<li>Male</li>
+						<li>{{ details["gender"] }}</li>
 					</ul>
 					<h6 class="friends-font my-auto mx-3">Spouses</h6>
 					<ul class="char-details font-arial">
-						<li>Monica Geller (2001)</li>
+						{% for spouse in details.spouses.split(', ') %}
+							<li>{{ spouse }}</li>
+						{% endfor %}
 					</ul>
 					<h6 class="friends-font my-auto mx-3">Main Job</h6>
 					<ul class="char-details font-arial">
-						<li>Statistical analyst and data reconfigurator</li>
+						{% for job in details.main_job.split(', ') %}
+							<li>{{ job }}</li>
+						{% endfor %}
 					</ul>
 					<h6 class="friends-font my-auto mx-3">Portrayed by</h6>
 					<ul class="char-details font-arial">
-						<li>Matthew Perry</li>
+						<li>{{ details["portrayed_by"] }}</li>
 					</ul>
 				</div>
 			</div>
 		</div>
+	</div>
+
+	<div class="container">
+		<div class="standard-textp"></div>
+
+		<!-- Text Paragraphs -->
+		<h1 class="friends-font margin-bottom-10">{{ character_info[0] }}</h1>
+		{% for paragraph in character_info[1:3] %}
+			<div class="standard-textp">{{ paragraph }}</div>
+		{% endfor %}
+
+		<!-- Text Paragraphs wit Picture -->
+		<div class="row">
+			<div class="col-lg-8 col-xl-7">
+				{% for paragraph in character_info[3:6] %}
+					<div class="standard-textp">{{ paragraph }}</div>
+				{% endfor %}
+			</div>
+			<div class="col-lg-4 col-xl-5 text-center">
+				<img src="{{ url_for('static', filename=action_img_file) }}" class="img-fluid char-description-pic padding-bottom-30" alt="Picture of {{ details['first_name'] }} in action">
+			</div>
+		</div>
+
+		<!-- Text Paragraphs -->
+		{% for paragraph in character_info[6:] %}
+			<div class="standard-textp">{{ paragraph }}</div>
+		{% endfor %}
 	</div>
 
 	<div class="standard-textp"></div>

@@ -1,4 +1,5 @@
 import os
+import json
 
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
@@ -18,7 +19,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-#db = SQL("sqlite:///finance.db")
+db = SQL("sqlite:///friends_characters.db")
 
 
 @app.after_request
@@ -31,9 +32,39 @@ def after_request(response):
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    characters = db.execute("SELECT * FROM characters")
+    return render_template("index.html", characters=characters)
 
-@app.route('<name>')
-def character_description():
+@app.route('/characters/<name>')
+def character_details(name):
+    details = db.execute("SELECT * FROM characters WHERE first_name = ?", name.capitalize())[0]
+    file_path = os.path.join(app.root_path, 'static', 'data', f'{name}.txt')
+    with open(file_path, 'r') as file:
+        character_info = file.read().split('\n\n')
     
-    return render_template("character.html")
+    image_formats = ['png', 'jpeg', 'jpg', 'webp', 'avif']
+    action_img_file = None
+    for format in image_formats:
+        action_img_path = f"static/img/{name}-action.{format}"
+        if os.path.exists(action_img_path):
+            action_img_file = action_img_path
+            break
+
+    action_img_file = action_img_file.replace("static/", "")
+    
+    return render_template("character.html", details=details, character_info=character_info, action_img_file=action_img_file)
+
+@app.route('/seasons')
+def seasons():
+    with open('static/data/seasons_data.json') as file:
+        seasons_data = json.load(file)
+
+    return render_template("seasons.html", seasons=seasons_data["seasons"])
+
+
+@app.route('/quiz')
+def quiz():
+    return render_template("quiz.html")
+
+#INSERT INTO characters (first_name, char_picture, full_name, birthday, gender, spouses, main_job, portrayed_by)
+#VALUES ("Ross", "ross-free.png", "Ross Geller", "October 18, 1967", "Male", "Carol Willick (1989 - 1994), Emily Waltham (1998 - 1999), Rachel Green (1999 - 1999)", "Paleontologist", "David Schwimmer");
