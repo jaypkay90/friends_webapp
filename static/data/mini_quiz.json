@@ -1,0 +1,35 @@
+{
+  "questions": [
+    {
+      "question": "What was the name of the dog Ross and Monica had, when they were kids?",
+      "answers": ["Rover", "Buster", "Chi-Chi", "Fido"],
+      "correct": "Chi-Chi",
+      "solution": "The name of Ross and Monica's dog was Chi-Chi. They had this dog when they were little kids. Ross' and Monica's parents told their kids that Chi-Chi was sent to a farm in Connecticut when in reality Chi-Chi died."
+    },
+    {
+      "question": "What is the name of Joey's stuffed penguin?",
+      "answers": ["Hugsy", "Waddles", "Mr. Penguin", "Penguino"],
+      "correct": "Hugsy",
+      "solution": "Joey's stuffed penguin is named Hugsy. Hugsy is a beloved companion of Joey's character. The penguin is frequently seen in Joey's apartment and accompanies him on various adventures. Hugsy holds sentimental value to Joey and is a recurring element in the show."
+    },
+    {
+      "question": "Who is Monica's long-time on-again, off-again love interest?",
+      "answers": ["Barry", "Richard", "Paolo", "James"],
+      "correct": "Richard",
+      "solution": "Monica's long-time on-again, off-again love interest is Richard Burke. Richard, played by Tom Selleck, is an ophthalmologist who is significantly older than Monica. Their relationship faces challenges due to the age difference and differing life goals, leading to multiple breakups and reconciliations throughout the series. Despite their differences, Richard remains a significant figure in Monica's romantic journey, leaving a lasting impact on her character development."
+    },
+    {
+      "question": "Which character famously exclaimed, \"We were on a break!\" during a relationship dispute?",
+      "answers": ["Ross", "Joey", "Rachel", "Chandler"],
+      "correct": "Ross",
+      "solution": "Ross famously exclaimed, \"We were on a break!\" during a relationship dispute. The line is uttered in the aftermath of a disagreement between Ross and Rachel, who was his girlfriend at that time. This statement becomes a recurring catchphrase throughout the series and sparks debates among fans about the status of their relationship. The phrase symbolizes the complex dynamics and misunderstandings that can arise in romantic relationships."
+    },
+    {
+      "question": "What is the name of Chandler's annoying ex-girlfriend?",
+      "answers": ["Emily", "Lisa", "Janice", "Sarah"],
+      "correct": "Janice",
+      "solution": "The name of Chandler's annoying ex-girlfriend is Janice Hosenstein. Janice, portrayed by Maggie Wheeler, is known for her distinctive voice and her recurring appearances throughout the series. Despite Chandler's attempts to end their relationship, Janice often reappears, much to his dismay. Her catchphrase, \"Oh my God\" is a recurring element that adds comedic moments to the show. Janice's character provides comedic relief and adds a touch of chaos to Chandler's life."
+    }
+  ]
+}
+  

@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout_modal.html" %}
 
 {% block title %}
 	{{ details["first_name"] }}
@@ -69,7 +69,7 @@
 				{% endfor %}
 			</div>
 			<div class="col-lg-4 col-xl-5 text-center">
-				<img src="{{ url_for('static', filename=action_img_file) }}" class="img-fluid char-description-pic padding-bottom-30" alt="Picture of {{ details['first_name'] }} in action">
+				<img src="{{ url_for('static', filename=action_img_file) }}" class="img-fluid rounded char-description-pic margin-bottom-30" alt="Picture of {{ details['first_name'] }} in action">
 			</div>
 		</div>
 
@@ -81,7 +81,4 @@
 
 	<div class="standard-textp"></div>
 
-	<!-- Include Quiz Modal Pop Up -->
-	<div id="include_QuizModal"></div>
-	<div class="page-overlay"></div>
 {% endblock %}

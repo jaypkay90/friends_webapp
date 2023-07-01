@@ -64,7 +64,11 @@ def seasons():
 
 @app.route('/quiz')
 def quiz():
-    return render_template("quiz.html")
+    with open('static/data/mini_quiz.json') as file:
+        questions = json.load(file)
+        
+    questions = questions["questions"]
+    return render_template("quiz.html", questions=questions)
 
 #INSERT INTO characters (first_name, char_picture, full_name, birthday, gender, spouses, main_job, portrayed_by)
 #VALUES ("Ross", "ross-free.png", "Ross Geller", "October 18, 1967", "Male", "Carol Willick (1989 - 1994), Emily Waltham (1998 - 1999), Rachel Green (1999 - 1999)", "Paleontologist", "David Schwimmer");

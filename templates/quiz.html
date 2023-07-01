@@ -1,5 +1,11 @@
 {% extends "layout.html" %}
 
+{% block additional_js %}
+    <script>
+        const questions = {{ questions | tojson | safe }}
+    </script>
+{% endblock %}
+
 {% block title %}
 	Quiz
 {% endblock %}

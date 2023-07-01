@@ -3,97 +3,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	function main() {
 		const doc_title = document.title;
 		// If Placeholder for QuizModal is on the page
-		if (document.getElementById('include_QuizModal')) {
-			// Fill placeholder in HTML doc with code for Quiz modal
-			include_quiz_modal();
+		if (document.getElementById('QuizModal')) {
 			// Load JS code for Quiz Modal
 			load_quiz_modal();
 		}
 		if (doc_title === "Quiz - Friends Forever") {
 			play_quiz();
 		};
-	}
-
-	function include_header() {
-		// Include header on every page of the website
-		const header = document.getElementById('include_header');
-		header.innerHTML = `
-			<!-- Add bootstrap navbar -->
-			<nav class="navbar navbar-expand-lg fixed-top bg-light">
-				<div class="container-fluid navbar-font">
-					<a class="navbar-brand" href="index.html">
-						<img class="navbar-logo" src="img/friends_logo.png" alt="Friends Logo">
-					</a>
-					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-						<ul class="navbar-nav ms-auto">
-							<!-- <li class="nav-item">
-								<a class="nav-link active" aria-current="page" href="index.html">Home</a>
-							</li> -->
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									Characters
-								</a>
-								<ul class="dropdown-menu">
-									<li><a class="dropdown-item" href="chandler.html">Chandler</a></li>
-									<li><a class="dropdown-item" href="joey.html">Joey</a></li>
-									<li><a class="dropdown-item" href="monica.html">Monica</a></li>
-									<li><a class="dropdown-item" href="phoebe.html">Phoebe</a></li>
-									<li><a class="dropdown-item" href="rachel.html">Rachel</a></li>
-									<li><a class="dropdown-item" href="ross.html">Ross</a></li>
-									<!-- <li><hr class="dropdown-divider"></li>
-									<li><a class="dropdown-item" href="#">Something else here</a></li> -->
-								</ul>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="seasons.html">Seasons</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="quiz.html">Quiz</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link disabled">Disabled</a>
-							</li>
-						</ul>
-						<form class="d-flex" role="search">
-							<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-							<button class="btn btn-outline-success" type="submit">Search</button>
-						</form>
-					</div>
-				</div>
-			</nav>
-			`;
-	}
-
-	function include_quiz_modal() {
-		const modal_placeholder = document.getElementById('include_QuizModal');
-		modal_placeholder.innerHTML = `
-			<div class="modal" tabindex="-1" role="dialog" id="QuizModal">
-				<div class="modal-dialog modal-dialog-centered" role="document">
-					<div class="modal-content">
-						<div class="card bg-secondary bg-gradient bg-opacity-50">
-							<div class="card-header">
-								<div class="d-flex justify-content-between">
-									<h3 class="friends-font my-auto">Take our Quiz!</h3>
-									<button type="button" class="close my-auto quiz_modalBtn" data-dismiss="modal" aria-label="Close">
-										<span aria-hidden="true">&times;</span>
-									</button>
-								</div>
-							</div>
-							<div class="card-body friends-font text-center">
-								<img src="img/friends_quiz.jpg" class="img-fluid" alt="Picture of Friends Quizzing Scene">
-								<h3 class="pt-3">Can you prove yourself as the Ultimate Friends Fan?</h3>
-							</div>
-							<div class="card-footer font-arial text-center py-3">
-								<a href="quiz.html" class="btn btn-success fs-4" id="quiz_modalBtn">Take Quiz</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			`;
 	}
 
 	function load_quiz_modal() {
@@ -150,85 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		qmodal_main();
 	}
 
-	function include_footer() {
-		// Include Footer on every page of the website
-		const footer = document.getElementById('include_footer');
-		footer.innerHTML = `
-			<!-- Add bootstrap footer -->
-			<div class="container-fluid bg-light text-muted font-arial">
-				<footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top">
-					<p class="col-md-4 mb-0 text-muted">&copy; 2023 Friends Forever</p>
-
-					<a href="index.html" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-						<img src="img/friends_logo.png" class="footer-logo" alt="Friends Logo">
-					</a>
-
-					<ul class="nav col-md-4 justify-content-end">
-						<li class="nav-item"><a href="index.html" class="nav-link px-2 text-muted">Home</a></li>
-						<li class="nav-item"><a href="#char-grid" class="nav-link px-2 text-muted">Characters</a></li>
-						<li class="nav-item"><a href="seasons.html" class="nav-link px-2 text-muted">Seasons</a></li>
-						<li class="nav-item"><a href="quiz.html" class="nav-link px-2 text-muted">Quiz</a></li>
-						<li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
-					</ul>
-				</footer>
-			</div>
-			`;
-	}
-
 	function play_quiz() {
 		// Code for Quiz.html
-		// Store Quiz questions, answers and solutions in array of dictionaries
-		const questions = [
-		{
-			question: "What was the name of the dog Ross and Monica had, when they were kids?",
-			answers: ["Rover", "Buster", "Chi-Chi", "Fido"],
-			correct: "Chi-Chi",
-			solution: `The name of Ross and Monica's dog was Chi-Chi. They had this dog when they were
-					little kids. Ross' and Monica's parents told their kids that Chi-Chi was sent to
-					a farm in Connecticut when in reality Chi-Chi died.`
-		},
-		{
-			question: "What is the name of Joey's stuffed penguin?",
-			answers: ["Hugsy", "Waddles", "Mr. Penguin", "Penguino"],
-			correct: "Hugsy",
-			solution: `Joey's stuffed penguin is named Hugsy. Hugsy is a beloved companion of Joey's character.
-					The penguin is frequently seen in Joey's apartment and accompanies him on various adventures.
-					Hugsy holds sentimental value to Joey and is a recurring element in the show.`
-		},
-		{
-			question: "Who is Monica's long-time on-again, off-again love interest?",
-			answers: ["Barry", "Richard", "Paolo", "James"],
-			correct: "Richard",
-			solution: `Monica's long-time on-again, off-again love interest is
-					Richard Burke. Richard, played by Tom Selleck, is an ophthalmologist who is significantly
-					older than Monica. Their relationship faces challenges due to the age difference and differing
-					life goals, leading to multiple breakups and reconciliations throughout the series. Despite
-					their differences, Richard remains a significant figure in Monica's romantic journey, leaving
-					a lasting impact on her character development.`
-		},
-		{
-			question: 'Which character famously exclaimed, "We were on a break!" during a relationship dispute?',
-			answers: ["Ross", "Joey", "Rachel", "Chandler"],
-			correct: "Ross",
-			solution: `Ross famously exclaimed, "We were on a break!" during a
-					relationship dispute. The line is uttered in the aftermath of a disagreement
-					between Ross and Rachel, who was his girlfriend at that time. This statement becomes a
-					recurring catchphrase throughout the series and sparks debates among fans about the status of their
-					relationship. The phrase symbolizes the complex dynamics and misunderstandings that can arise in
-					romantic relationships.`
-		},
-		{
-			question: "What is the name of Chandler's annoying ex-girlfriend?",
-			answers: ["Emily", "Lisa", "Janice", "Sarah"],
-			correct: "Janice",
-			solution: `The name of Chandler's annoying ex-girlfriend is Janice Hosenstein. Janice, portrayed by Maggie Wheeler,
-					is known for her distinctive voice and her recurring appearances throughout the series. Despite Chandler's
-					attempts to end their relationship, Janice often reappears, much to his dismay. Her catchphrase, "Oh my God"
-					is a recurring element that adds comedic moments to the show. Janice's character provides comedic relief and
-					adds a touch of chaos to Chandler's life.`
-		}
-		];
-
 		// Get all elements needed for code
 		const quiz_img = document.getElementById('quiz-img');
 		const question = document.getElementById('question');
