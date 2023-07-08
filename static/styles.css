@@ -134,6 +134,42 @@ body {
     max-height: 420px;
 }
 
+.mem-gameboard-container {
+    /* Create device responsive memory gameboard. All cards are visible on screen without the need to scroll. */
+    /* Set the width to the minimum of 1. 80% of the visible viewport height or 2. 95% of the visible viewport width or 3. max. 640px */
+    width: min(640px, 95vw, 80vh);
+    /* Since padding is calculated by the width of the element, the following line essentially creates a 4:3 aspect ratio */
+    /* 640/4*3 = 480; 95vw/4*3 = 71.25vw 80vh/4*3 = 60vh */
+    padding-top: min(480px, 71.25vw, 60vh);    
+    position: relative;
+    margin: auto; /* Center gameboard horizontally */
+}
+
+.mem-gameboard {
+    /* Let the gameboard fill the whole container */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-wrap: wrap; /* Enable flex wrap to avoid content overflow on the gameboard */
+}
+
+.mem-cell {
+    width: calc(25% - 10px); /* Subtract margin, so that exactly four elements fit in one row of the gameboard */
+    height: calc(33,333% - 10px); /* Subtract margin, so that exactly 3 elements fit in one column of the gameboard */
+    margin: 5px; /* Create space around the memory card cell */
+    position: relative;
+}
+
+.mem-card { 
+    position: absolute;
+    max-width: 100%; /* Let the picture fill the whole width of the memory cell... */
+    height: auto; /* ...and keep it's aspect ratio */
+    border-radius: 0.25rem; /* Round the edges of the picture */
+}
+
 /* Responsive layout - makes a one column layout instead of a two-column layout */
 @media (max-width: 768px) {
     .xs-margin-bottom-30 {

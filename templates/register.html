@@ -1,20 +1,48 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Register
+	Register
 {% endblock %}
 
 {% block main %}
-    <form action="/register" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
+    <div class="standard-textp"></div>
+    <!--Quiz Container-->
+    <div class="container">
+        <div class ="row quiz-row justify-content-center">
+            <div class="col col-md-6">
+                <div class="card bg-secondary bg-gradient bg-opacity-50">
+                    <div class="card-header">
+                        <h3 class="friends-font my-auto">Register</h3>
+                    </div>
+                    <form action="/register" method="post">
+                        <div class="card-body font-arial">
+                            <div class="my-3">
+                                <input autocomplete="off" class="form-control mx-auto {% if errors['username_error'] %} border-danger border-2 {% endif %}" name="username" placeholder="Username" type="text" value="{{ username }}">
+                                <div class="text-center text-danger friends-font">
+                                    {{ errors["username_error"] }}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <input class="form-control mx-auto {% if errors['password_error'] %} border-danger border-2 {% endif %}" name="password" placeholder="Password, at least 4 characters" type="password">
+                                <div class="text-center text-danger friends-font">
+                                    {{ errors["password_error"] }}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <input class="form-control mx-auto {% if errors['confirmation_error'] %} border-danger border-2 {% endif %}" name="confirmation" placeholder="Password again" type="password">
+                                <div class="text-center text-danger friends-font">
+                                    {{ errors["confirmation_error"] }}
+                                </div>
+                            </div>                           
+                        </div>
+                        <div class="card-footer font-arial text-center">
+                            <button type="submit" class="btn btn-secondary bg-success">Register</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
-        </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirm Password" type="password">
-        </div>
-        <button class="btn btn-primary" type="submit">Register</button>
-    </form>
+    </div>
+
+    <div class="standard-textp"></div>
 {% endblock %}

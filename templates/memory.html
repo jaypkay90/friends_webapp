@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block additional_js %}
+
+{% endblock %}
+
+{% block title %}
+	Memory
+{% endblock %}
+
+{% block main %}
+    <div class="standard-textp"></div>
+
+    <div class="container vh-100">
+        <div class="mem-gameboard-container">
+            <div class="mem-gameboard">
+                {% for card in cards %}
+                    <div class="mem-cell">
+                        <img src="{{ url_for('static', filename='img/memory/')}}{{ card['back'] }}" data-front="{{ card['front'] }}" class="border border-dark mem-card" alt="Memory Card">
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="standard-textp"></div>
+{% endblock %}

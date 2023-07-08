@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (doc_title === "Quiz - Friends Forever") {
 			play_quiz();
 		};
+		if (doc_title === "Memory - Friends Forever") {
+			play_memory();
+		};
 	}
 
 	function load_quiz_modal() {
@@ -269,6 +272,87 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 
 		q_main();
+	}
+
+	function play_memory() {
+		const cards = document.querySelectorAll(".mem-card");
+		let first_turned, second_turned;
+		let card_turned = false;
+		let lock_gameboard = false;
+
+		function mem_main() {
+			cards.forEach(card => {
+				card.addEventListener("click", turn_card);
+			});			  
+		}
+
+		function turn_card() {
+			// If gameboard is locked (two cards were clicked and match is currently being checked), disable turnover of all other cards
+			// If user clicks on the first card he turned over, disable turnover of that card
+			if (lock_gameboard === true || this === first_turned) {
+				return;
+			}
+
+			// If card is currently facedown, turn faceup
+			if (this.src.endsWith('/static/img/memory/back.png')) {
+				this.src = `/static/img/memory/${this.dataset.front}`;
+			}
+			// If card is currently faceup, turn facedown
+			else {
+				this.src = `/static/img/memory/back.png`;
+			}
+
+			// If player turned over one card (first click)...
+			if (card_turned === false) {
+				// Set card_turned to true and save current card as first card turned
+				card_turned = true;
+				first_turned = this;
+				
+				// Player can't turn over first and second card at the same time.
+				// Meaning: We don't need an else block here
+				return
+			}
+
+			// If player turned over two cards
+			// Set card_turned to false again and save current card as second card
+			card_turned = false;
+			second_turned = this;
+
+			check_match();
+		}
+
+		function check_match() {
+			// Lock gameboard (disable turnover of all cards), while match is being checked
+			lock_gameboard = true;
+			// If match, remove eventListener from the two cards that matched
+			if (first_turned.dataset.front === second_turned.dataset.front) {
+				console.log("Match!");
+				first_turned.removeEventListener("click", turn_card);
+				second_turned.removeEventListener("click", turn_card);
+				setTimeout(function() {
+					reset_gameboard();
+				}, 2000); // Wait 2 seconds before enabling turnorver of new cards
+			}
+			// If no match, flip cards back over
+			else {
+				console.log("No match!");
+				setTimeout(function() {
+					first_turned.src = `/static/img/memory/back.png`;
+					second_turned.src = `/static/img/memory/back.png`;
+					// When cards were turned back facedown, unlock gameboard to enable turnover of new cards
+					reset_gameboard();
+				}, 2000); // Wait 2 seconds before turning cards facedown again and enabling turnover of new cards
+			}
+		}
+
+		function reset_gameboard() {
+			card_turned = false;
+			lock_gameboard = false;
+			first_turned = null;
+			second_turned = null;
+		}
+
+		mem_main();
 	}
 
 	main();
