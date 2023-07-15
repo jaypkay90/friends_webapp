@@ -27,9 +27,9 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto">
-                        <!-- <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
-                        </li> -->
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{{ url_for('index') }}">Home</a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Characters
@@ -41,8 +41,6 @@
                                 <li><a class="dropdown-item" href="/characters/phoebe">Phoebe</a></li>
                                 <li><a class="dropdown-item" href="/characters/rachel">Rachel</a></li>
                                 <li><a class="dropdown-item" href="/characters/ross">Ross</a></li>
-                                <!-- <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li> -->
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -53,21 +51,17 @@
                         </li>
                         {% if session["user_id"] %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                                <a class="nav-link text-primary" href="{{ url_for('membersarea') }}">Members Area</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" href="{{ url_for('logout') }}">Logout</a>
                             </li>
                         {% else %}
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                                <a class="nav-link text-success" href="{{ url_for('login') }}">Login</a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link disabled">Disabled</a>
-                        </li>
                     </ul>
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
                 </div>
             </div>
         </nav>
@@ -84,15 +78,17 @@
                 <p class="col-md-4 mb-0 text-muted">&copy; 2023 Friends Forever</p>
 
                 <a href="{{ url_for('index') }}" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-                    <img src="{{ url_for('static', filename='img/friends_logo.png') }}" class="footer-logo" alt="Friends Logo">
+                    <img src="{{ url_for('static', filename='img/friends_logo.png') }}" class="footer-logo pt-1" alt="Friends Logo">
                 </a>
 
                 <ul class="nav col-md-4 justify-content-end">
                     <li class="nav-item"><a href="{{ url_for('index') }}" class="nav-link px-2 text-muted">Home</a></li>
+                    {% if session["user_id"] %}
+                        <li class="nav-item"><a href="{{ url_for('membersarea') }}" class="nav-link px-2 text-muted">Members Area</a></li>
+                    {% endif %}
                     <li class="nav-item"><a href="{{ url_for('index') }}#char-grid" class="nav-link px-2 text-muted">Characters</a></li>
                     <li class="nav-item"><a href="{{ url_for('seasons') }}" class="nav-link px-2 text-muted">Seasons</a></li>
                     <li class="nav-item"><a href="{{ url_for('quiz') }}" class="nav-link px-2 text-muted">Quiz</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
                 </ul>
             </footer>
         </div>

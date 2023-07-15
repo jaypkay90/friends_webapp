@@ -3,11 +3,12 @@ import json
 import random
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
+from functools import wraps
 
 #from helpers import apology, login_required, lookup, usd
 
@@ -30,6 +31,18 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
+
+
+# Function to check if user is logged in when he reaches protected route
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+
+        # If user is not logged in, redirect to login page
+        if 'user_id' not in session:            
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route('/')
@@ -182,24 +195,109 @@ def register():
         return render_template("register.html", errors={})
 
 
-@app.route("/memory")
+@app.route("/membersarea")
+@login_required
+def membersarea():
+    # Get username from users table
+    username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
+
+    # Get memory gamedata from memory table
+    memory_data = db.execute("SELECT highscore, current_badge FROM memory WHERE user_id = ?", session["user_id"])
+
+    # If user never played memory before, set highscore to 0 and make list of badges empty
+    if len(memory_data) != 1:
+        memory_highscore = 0
+        memory_badges = []
+
+    # If user played before...
+    else:
+        # Take highscore from database
+        memory_highscore = memory_data[0]["highscore"]
+
+        # "Calc" badges
+        best_badge = memory_data[0]["current_badge"]
+        if best_badge == "Bronze":
+            memory_badges = ["Bronze"]
+        elif best_badge == "Silver":
+            memory_badges = ["Bronze", "Silver"]
+        elif best_badge == "Gold":
+            memory_badges = ["Bronze", "Silver", "Gold"]
+
+    return render_template("membersarea.html", username=username, memory_highscore=memory_highscore, memory_badges=memory_badges)
+
+
+@app.route("/memory", methods=["GET", "POST"])
+@login_required
 def memory():
-    cards = [
-        {"front": "chandler.png", "back": "back.png"},
-        {"front": "joey.png", "back": "back.png"},
-        {"front": "monica.png", "back": "back.png"},
-        {"front": "phoebe.png", "back": "back.png"},
-        {"front": "rachel.png", "back": "back.png"},
-        {"front": "ross.png", "back": "back.png"},
-    ]
+    # If user reached out via POST (by submitting his score via a form)
+    if request.method == "POST":
 
-    # Double the cards to create pairs
-    cards += cards
+        # Get user's score and times_played from form
+        score = int(request.form.get("score"))
+        times_played = int(request.form.get("timesPlayed"))
 
-    # Put cards in random order
-    random.shuffle(cards)
+        # Calc current badge
+        if (times_played < 2):
+            current_badge = "None"
+        elif (times_played < 5):
+            current_badge = "Bronze"
+        elif (times_played < 10):
+            current_badge = "Silver"
+        else:
+            current_badge = "Gold"
 
-    return render_template("memory.html", cards=cards)
+        # Check if user that is currently logged in already played memory
+        user_gamedata = db.execute("SELECT * FROM memory WHERE user_id = ?", session["user_id"])
+
+        # If user never played before, insert stats of game into memory table
+        if len(user_gamedata) != 1:
+            db.execute("INSERT INTO memory (user_id, highscore, times_played, current_badge) SELECT users.id, ?, ?, ? FROM users WHERE users.id = ?", score, times_played, current_badge, session["user_id"])
+
+        # If user played before, update data
+        else:
+            # If user produced new highscore, update data and insert score into highscore column
+            if (user_gamedata[0]["highscore"]) <= score:
+                db.execute("UPDATE memory SET highscore = ?, times_played = ?, current_badge = ? WHERE user_id = (SELECT id FROM users WHERE id = ?)", score, times_played, current_badge, session["user_id"])
+
+            # If no new highscore, update data, but leave highscore column as it is    
+            else:
+                db.execute("UPDATE memory SET times_played = ?, current_badge = ? WHERE user_id = (SELECT id FROM users WHERE id = ?)", times_played, current_badge, session["user_id"])
+
+        # Redirect to members area
+        return redirect("/membersarea")
+    
+    # If user reached out via Get
+    else:
+        # List of dicts with memory cards
+        cards = [
+            {"front": "chandler.png", "back": "back.png"},
+            {"front": "joey.png", "back": "back.png"},
+            {"front": "monica.png", "back": "back.png"},
+            {"front": "phoebe.png", "back": "back.png"},
+            {"front": "rachel.png", "back": "back.png"},
+            {"front": "ross.png", "back": "back.png"},
+        ]
+
+        # Double the cards to create pairs
+        cards += cards
+
+        # Put cards in random order
+        #random.shuffle(cards)
+
+        # Get current highscore and times_played of user from db
+        user_gamedata = db.execute("SELECT highscore, times_played FROM memory WHERE user_id = ?", session["user_id"])
+        
+        # If user never played before, set highscore and times_played to 0
+        if len(user_gamedata) != 1:
+            highscore = 0
+            times_played = 0
+        
+        # If user played before, take data from dictionary of table data
+        else:
+            highscore = user_gamedata[0]["highscore"]
+            times_played = user_gamedata[0]["times_played"]
+
+        return render_template("memory.html", cards=cards, highscore=highscore, times_played=times_played)
 
 #INSERT INTO characters (first_name, char_picture, full_name, birthday, gender, spouses, main_job, portrayed_by)
 #VALUES ("Ross", "ross-free.png", "Ross Geller", "October 18, 1967", "Male", "Carol Willick (1989 - 1994), Emily Waltham (1998 - 1999), Rachel Green (1999 - 1999)", "Paleontologist", "David Schwimmer");

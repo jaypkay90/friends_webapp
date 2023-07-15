@@ -101,6 +101,13 @@ body {
     object-fit: contain;
 }
 
+.game-card-img {
+    max-width: 50%;
+    height: auto;
+    padding: 5px;
+    margin: auto;
+}
+
 .char-details {
     list-style-type: none;
 }
@@ -190,6 +197,12 @@ body {
         display: flex;
         align-items: center;
         min-height: 100vh;
+    }
+}
+
+@media (min-width: 576px) {
+    .container-max-sm {
+        width: 540px;
     }
 }
 
