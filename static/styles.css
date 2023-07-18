@@ -10,6 +10,10 @@ body {
     padding-top: 55px;
 }
 
+.min-vh-100 {
+    min-height: 100vh;
+}
+
 .footer-logo {
     width: min(30vw, 150px);
     margin: 0 5vw 0 0;
@@ -33,7 +37,6 @@ body {
     font-size: 15px;
 }
 
-/* Style of H1 with Friends Font */
 .friends-font {
     font-family: 'Permanent Marker', cursive, Brush Script MT;
 }
@@ -97,7 +100,7 @@ body {
 }
 
 .char-card-img {
-    height: 300px;
+    height: min(50vh, 300px);
     object-fit: contain;
 }
 
@@ -177,7 +180,22 @@ body {
     border-radius: 0.25rem; /* Round the edges of the picture */
 }
 
-/* Responsive layout - makes a one column layout instead of a two-column layout */
+/* Show only current page, previous and next button in leaderboard footer navigation */
+ul li.paginate_button.page-item:not(.next):not(.previous):not(.active) {
+    display: none;
+}
+
+/* Make leaderboard table horizontally scrollable without overflowing the container */
+.dt-row {
+    overflow: auto;
+}
+
+/* Remove "sorting arrows from leaderboard columns, where sorting is disabled */
+#leaderboard th.disable-sorting::before,
+#leaderboard th.disable-sorting::after {
+    visibility: hidden !important;
+}
+
 @media (max-width: 768px) {
     .xs-margin-bottom-30 {
         margin-bottom: 30px;
@@ -218,6 +236,6 @@ body {
     #friends_pic07 {
         margin: 0px auto 30px auto;
         display: block;
-        max-width: 75vh;
+        max-width: 75vw;
     }
 }

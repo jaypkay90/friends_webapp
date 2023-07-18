@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+
+{% block additional_styles %}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css">
+{% endblock %}
+{% block additional_js %}
+   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+   <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+   <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+{% endblock %}
+
+{% block title %}
+	Leaderboard
+{% endblock %}
+
+{% block main %}
+    <div class="container min-vh-100">
+        <div class="standard-textp"></div>
+        <h1 class="friends-font margin-bottom-10 text-center">Leaderboard</h1>
+        <div class="standard-textp"></div>
+
+        <!-- Leaderboard -->
+        <div class="container">
+            <table id="leaderboard" class="table table-striped">
+                <thead class="friends-font">
+                    <tr>
+                        <th class="disable-sorting">#</th>
+                        <th class="disable-sorting">Name</th>
+                        <th>Highsore</th>
+                        <th>Badges</th>
+                        <th>Times Played</th>
+                    </tr>
+                </thead>
+                <tbody class="font-arial">
+                    <!-- Loop through memory_data list of dicts and display data of every user in a table row -->
+                    {% for dict in memory_data %}
+                        <tr>
+                            <td></td>
+                            <td>{{ dict["username"] }}</td>
+                            <td>{{ dict["highscore"] }}</td>
+                            <td>{{ dict["number_badges"] }}</td>
+                            <td>{{ dict["times_played"] }}</td>
+                        </tr>
+                    {% endfor %}
+                    <!--<tr>
+                        <td></td>
+                        <td>Garrett Winters</td>
+                        <td>Accountant</td>
+                        <td>Tokyo</td>
+                        <td>63</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Ashton Cox</td>
+                        <td>Junior Technical Author</td>
+                        <td>San Francisco</td>
+                        <td>66</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Cedric Kelly</td>
+                        <td>Senior Javascript Developer</td>
+                        <td>Edinburgh</td>
+                        <td>22</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Airi Satou</td>
+                        <td>Accountant</td>
+                        <td>Tokyo</td>
+                        <td>33</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Brielle Williamson</td>
+                        <td>Integration Specialist</td>
+                        <td>New York</td>
+                        <td>61</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Herrod Chandler</td>
+                        <td>Sales Assistant</td>
+                        <td>San Francisco</td>
+                        <td>59</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Shad Decker</td>
+                        <td>Regional Director</td>
+                        <td>Edinburgh</td>
+                        <td>51</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Michael Bruce</td>
+                        <td>Javascript Developer</td>
+                        <td>Singapore</td>
+                        <td>29</td>
+                    </tr>   
+                    <tr>
+                        <td></td>
+                        <td>Donna Snider</td>
+                        <td>Customer Support</td>
+                        <td>New York</td>
+                        <td>27</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Tiger Nixon</td>
+                        <td>System Architect</td>
+                        <td>Edinburgh</td>
+                        <td>61</td>
+                    </tr>-->
+                </tbody>
+                <tfoot class="friends-font">
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Highscore</th>
+                        <th>Badges</th>
+                        <th>Times Played</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="standard-textp"></div>
+    </div>
+{% endblock %}

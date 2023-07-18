@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block main %}
-    <div class="container">
+    <div class="container min-vh-100">
         <div class="standard-textp"></div>
         <h1 class="friends-font margin-bottom-10 text-center">Members Area</h1>
         <div class="standard-textp"></div>
@@ -68,17 +68,28 @@
 
         <div class="standard-textp"></div>
 
-        <!-- Game Overview -->
-        <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center">
-            <div class="col">
-                <div class="card shadow-lg">
-                    <img src="{{ url_for('static', filename='img/memory/memory_icon.png') }}" class="game-card-img" alt="Image of Chandler Bing">
-                    <div class="card-body text-center">
-                        <a href="/memory" class="btn btn-secondary">Play Memory</a>
+        <!-- Game Overview and Link to Leaderboard -->
+        <div class="container char-cont">
+            <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center">
+                <div class="col">
+                    <div class="card shadow-lg">
+                        <img src="{{ url_for('static', filename='img/memory/memory_icon.png') }}" class="game-card-img" alt="Image of Memory Cards">
+                        <div class="card-body text-center">
+                            <a href="/memory" class="btn btn-secondary">Play Memory</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card shadow-lg">
+                        <img src="{{ url_for('static', filename='img/trophy.png') }}" class="game-card-img" alt="Image of a trophy">
+                        <div class="card-body text-center">
+                            <a href="/leaderboard" class="btn btn-secondary">View Leaderboard</a>
+                        </div>
                     </div>
                 </div>
             </div>
-		</div>
+        </div>
 
         <div class="standard-textp"></div>
     </div>

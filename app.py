@@ -216,6 +216,8 @@ def membersarea():
 
         # "Calc" badges
         best_badge = memory_data[0]["current_badge"]
+        if best_badge == "None":
+            memory_badges = []
         if best_badge == "Bronze":
             memory_badges = ["Bronze"]
         elif best_badge == "Silver":
@@ -298,6 +300,28 @@ def memory():
             times_played = user_gamedata[0]["times_played"]
 
         return render_template("memory.html", cards=cards, highscore=highscore, times_played=times_played)
+    
 
+@app.route("/leaderboard")
+@login_required
+def leaderboard():
+    # Get username from users table and all data from memory table
+    memory_data = db.execute("SELECT users.username, memory.highscore, memory.times_played, memory.current_badge FROM users JOIN memory ON users.id = memory.user_id")
+
+    # Add number of badges to every user in the datalist
+    for dict in memory_data:
+        if dict["current_badge"] == "None":
+            dict["number_badges"] = 0
+        elif dict["current_badge"] == "Bronze":
+            dict["number_badges"] = 1
+        elif dict["current_badge"] == "Silver":
+            dict["number_badges"] = 2
+        # If user already won the Gold badge...    
+        else:
+            dict["number_badges"] = 3
+
+    return render_template("leaderboard.html", memory_data=memory_data)
+
+#SELECT users.username, memory.highscore, memory.times_played, memory.current_badge FROM users JOIN memory ON users.id = memory.user_id;
 #INSERT INTO characters (first_name, char_picture, full_name, birthday, gender, spouses, main_job, portrayed_by)
 #VALUES ("Ross", "ross-free.png", "Ross Geller", "October 18, 1967", "Male", "Carol Willick (1989 - 1994), Emily Waltham (1998 - 1999), Rachel Green (1999 - 1999)", "Paleontologist", "David Schwimmer");

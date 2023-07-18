@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (doc_title === "Memory - Friends Forever") {
 			play_memory();
 		}
+		if (doc_title === "Leaderboard - Friends Forever") {
+			initialise_leaderboard();
+		}
 	}
 
 	function load_quiz_modal() {
@@ -114,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		const nextBtn = document.getElementById('next');
 		const answerElements = document.getElementById('answers');
 		const solutionElement = document.getElementById('solution');
+		const registerBtn = document.getElementById('registerBtn');
 
 		// Store questions.length in variable, so the computer doesn't have to waste time calculating this multiple times
 		const questions_length = questions.length;
@@ -151,8 +155,9 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Reset score and questionnumber
 			qnr = 0;
 			score = 0;
-			// Make quiz_img invisible and question block visible
+			// Make quiz_img + registerBtn invisible and question block visible
 			quiz_img.style.display = "none";
+			registerBtn.style.display = "none";
 			question_border.classList.add("border-bottom", "border-secondary", "margin-bottom-20", "quizQ");
 			question.classList.remove("pb-1");
 			question.classList.add("pb-2");
@@ -269,6 +274,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			nextBtn.disabled = false;
 			nextBtn.innerHTML = "Play again";
 			quiz_img.style.display = "block";
+			// Show register button
+			registerBtn.style.display = "inline-block";
 			// Display score in answer-block and score evaluation in solution-block
 			answers.classList.remove("gap-3");
 			answers.innerHTML = `
@@ -601,6 +608,35 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 
 		mem_main();
+	}
+
+	function initialise_leaderboard() {
+		const table = new DataTable('#leaderboard', {
+			searching: false,
+			pagingType: 'simple_numbers',
+			//Order by "Score" in desc order by default
+			order: [[2, 'desc']],
+			// If element has class "disable-sorting", disable sorting
+			columnDefs: [
+				{ targets: 'disable-sorting', orderable: false, }
+			],
+			columns: [
+				{ title: '#' },
+				{ title: 'Name'},
+				{ title: 'Highscore' },
+				{ title: 'Badges' },
+				{ title: 'Times played' },
+			],
+		});		
+
+		// Enable ranking column
+		table.on('order.dt search.dt', function() {
+			const rows = table.rows({ order: 'applied', search: 'applied' }).nodes();
+			rows.each(function(row, index) {
+			  const rank = table.order()[0][1] === 'desc' ? index + 1 : rows.length - index;
+			  $(row).find('td:first').text(rank);
+			});
+		}).draw();
 	}
 
 	main();
