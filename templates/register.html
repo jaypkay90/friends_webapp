@@ -6,14 +6,16 @@
 
 {% block main %}
     <div class="standard-textp"></div>
-    <!--Quiz Container-->
-    <div class="container">
+
+    <div class="container min-vh-100">
         <div class ="row quiz-row justify-content-center">
             <div class="col col-md-6">
                 <div class="card bg-secondary bg-gradient bg-opacity-50">
                     <div class="card-header">
                         <h3 class="friends-font my-auto">Register</h3>
                     </div>
+
+                    <!-- Register form with placeholders for potential errors -->
                     <form action="/register" method="post">
                         <div class="card-body font-arial">
                             <div class="my-3">
@@ -39,6 +41,7 @@
                             <button type="submit" class="btn btn-secondary bg-success">Register</button>
                         </div>
                     </form>
+                    
                 </div>
             </div>
         </div>

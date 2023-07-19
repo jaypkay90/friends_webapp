@@ -155,9 +155,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			// Reset score and questionnumber
 			qnr = 0;
 			score = 0;
-			// Make quiz_img + registerBtn invisible and question block visible
+			// Make quiz_img + registerBtn invisible
 			quiz_img.style.display = "none";
 			registerBtn.style.display = "none";
+			// Make nextBtn green and question block visible
+			nextBtn.classList.add("bg-success");
 			question_border.classList.add("border-bottom", "border-secondary", "margin-bottom-20", "quizQ");
 			question.classList.remove("pb-1");
 			question.classList.add("pb-2");
@@ -274,7 +276,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			nextBtn.disabled = false;
 			nextBtn.innerHTML = "Play again";
 			quiz_img.style.display = "block";
-			// Show register button
+			// Show register button and make nextBtn grey
+			nextBtn.classList.remove("bg-success");
 			registerBtn.style.display = "inline-block";
 			// Display score in answer-block and score evaluation in solution-block
 			answers.classList.remove("gap-3");
@@ -311,7 +314,12 @@ document.addEventListener('DOMContentLoaded', function() {
 									level of familiarity with the show. You're absolutely in the league
 									of the ultimate Friends fans!`;
 			}
-			return score_evaluation;
+
+			// Add a sign up call to the text
+			sign_up_call = `<h4 class="text-danger friends-font mt-3">Sign up to play more Friends related games!</h4>`;
+			final_text = score_evaluation + "<br>" + sign_up_call;
+
+			return final_text;
 		}
 
 		q_main();
@@ -614,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		const table = new DataTable('#leaderboard', {
 			searching: false,
 			pagingType: 'simple_numbers',
-			//Order by "Score" in desc order by default
+			// Order by "Highscore" in desc order by default
 			order: [[2, 'desc']],
 			// If element has class "disable-sorting", disable sorting
 			columnDefs: [
@@ -633,8 +641,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		table.on('order.dt search.dt', function() {
 			const rows = table.rows({ order: 'applied', search: 'applied' }).nodes();
 			rows.each(function(row, index) {
-			  const rank = table.order()[0][1] === 'desc' ? index + 1 : rows.length - index;
-			  $(row).find('td:first').text(rank);
+				const rank = table.order()[0][1] === 'desc' ? index + 1 : rows.length - index;
+				$(row).find('td:first').text(rank);
 			});
 		}).draw();
 	}

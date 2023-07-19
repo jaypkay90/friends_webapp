@@ -14,56 +14,49 @@
         <h1 class="friends-font margin-bottom-10 text-center">Members Area</h1>
         <div class="standard-textp"></div>
 
-        <!-- Game Statistics -->
-        <div class="container char-cont text-break friends-font card bg-secondary bg-gradient bg-opacity-50">    
-            <div class="row">
-                <div class="col-12 d-flex align-items-center justify-content-center py-2 border-bottom text-danger"><h4>{{ username }}</h4></div>
-            </div>
-            <div class="row">
-                <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-start-0 text-success">Game</div>
-                <div class="col-3 d-flex align-items-center justify-content-center py-2 border text-success">Highscore</div>
-                <div class="col-6 d-flex align-items-center justify-content-center py-2 border border-end-0 text-success">Badges</div>
-            </div>
+        <!-- Grid with Game Statistics of user currently logged in -->
+        <div class="overflow-auto">
+            <div class="container gamestats-cont friends-font card bg-secondary bg-gradient bg-opacity-50">    
+                <div class="row">
+                    <div class="col-12 d-flex align-items-center justify-content-center py-2 border-bottom text-danger"><h4>{{ username }}</h4></div>
+                </div>
+                <div class="row">
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-start-0 text-success">Game</div>
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border text-success">Highscore</div>
+                    <div class="col-6 d-flex align-items-center justify-content-center py-2 border border-end-0 text-success">Badges</div>
+                </div>
+                <div class="row">
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-start-0">Memory</div>
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border">{{ memory_highscore }}</div>
+                    
+                    <!-- Make three div-elements (for-loop) -->
+                    {% for i in range(3) %}
+                        <div class="col-2 d-flex align-items-center justify-content-center py-2 border">
+                            {% if i < memory_badges|length %}
+                                <img src="{{ url_for('static', filename='img/' ~ medal_pics[i]) }}" alt="Image of {{ memory_badges[i] }} Medal" class="img-fluid">
+                            {% else %}
+                                <img src="{{ url_for('static', filename='img/missing.png') }}" alt="Missing Lettering" class="img-fluid">
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                </div>
 
-            <div class="row">
-                <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-start-0">Memory</div>
-                <div class="col-3 d-flex align-items-center justify-content-center py-2 border">{{ memory_highscore }}</div>
-                <div class="col-2 d-flex align-items-center justify-content-center py-2 border">
-                    {% if "Bronze" in memory_badges %}
-                        <img src="static/img/bronze_medal_tiny.png" class="img-fluid" alt="Image of Bronze Medal">
-                    {% else %}
+                <!-- Last row of the Game Statistics has a different border styling -->
+                <!--<div class="row">
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-start-0 border-bottom-0">Memory</div>
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-bottom-0">{{ memory_highscore }}</div>
+                    <div class="col-2 d-flex align-items-center justify-content-center py-2 border border-bottom-0">
+                        <img src="static/img/bronze_medal_tiny.png" class="img-fluid" alt="Image of Bronze Medal border-bottom-0">
+                    </div>
+                    <div class="col-2 d-flex align-items-center justify-content-center py-2 border border-bottom-0">
                         <img src="static/img/missing.png" class="img-fluid" alt="Missing Lettering">
-                    {% endif %}
-                </div>
-                <div class="col-2 d-flex align-items-center justify-content-center py-2 border">
-                    {% if "Silver" in memory_badges %}
-                        <img src="static/img/silver_medal_tiny.png" class="img-fluid" alt="Image of Silver Medal">
-                    {% else %}
+                    </div>
+                    <div class="col-2 d-flex align-items-center justify-content-center py-2 border border-end-0 border-bottom-0">
                         <img src="static/img/missing.png" class="img-fluid" alt="Missing Lettering">
-                    {% endif %}
-                </div>
-                <div class="col-2 d-flex align-items-center justify-content-center py-2 border border-end-0">
-                    {% if "Gold" in memory_badges %}
-                        <img src="static/img/gold_medal_tiny.png" class="img-fluid" alt="Image of Gold Medal">
-                    {% else %}
-                        <img src="static/img/missing.png" class="img-fluid" alt="Missing Lettering">
-                    {% endif %}
-                </div>
+                    </div>
+                </div>-->
             </div>
-
-            <!--<div class="row">
-                <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-start-0 border-bottom-0"></div>
-                <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-bottom-0"></div>
-                <div class="col-2 d-flex align-items-center justify-content-center py-2 border border-bottom-0">
-                    <img src="static/img/bronze_medal_tiny.png" class="img-fluid" alt="Image of Bronze Medal border-bottom-0">
-                </div>
-                <div class="col-2 d-flex align-items-center justify-content-center py-2 border border-bottom-0">
-                    <img src="static/img/missing.png" class="img-fluid" alt="Missing Lettering">
-                </div>
-                <div class="col-2 d-flex align-items-center justify-content-center py-2 border border-end-0 border-bottom-0">
-                    <img src="static/img/missing.png" class="img-fluid" alt="Missing Lettering">
-                </div>
-            </div>-->
         </div>
 
         <div class="standard-textp"></div>
@@ -73,7 +66,7 @@
             <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center">
                 <div class="col">
                     <div class="card shadow-lg">
-                        <img src="{{ url_for('static', filename='img/memory/memory_icon.png') }}" class="game-card-img" alt="Image of Memory Cards">
+                        <img src="{{ url_for('static', filename='img/memory/memory_icon.png') }}" class="game-card-img" alt="Image of Memory Card">
                         <div class="card-body text-center">
                             <a href="/memory" class="btn btn-secondary">Play Memory</a>
                         </div>

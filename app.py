@@ -10,8 +10,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
 from functools import wraps
 
-#from helpers import apology, login_required, lookup, usd
-
 # Configure application
 app = Flask(__name__)
 
@@ -20,20 +18,20 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Configure CS50 Library to use SQLite database
+# Configure usability of SQLite database
 db = SQL("sqlite:///friends_webapp.db")
 
 
 @app.after_request
 def after_request(response):
-    """Ensure responses aren't cached"""
+    # Ensure responses aren't cached
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
 
 
-# Function to check if user is logged in when he reaches protected route
+# Function to check if user is logged in when he reaches a protected route
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -47,32 +45,48 @@ def login_required(f):
 
 @app.route('/')
 def index():
+    # Get character information from characters table
     characters = db.execute("SELECT * FROM characters")
     return render_template("index.html", characters=characters)
 
 
 @app.route('/characters/<name>')
 def character_details(name):
+    # Get basic information about the character from the charcters table to display in infobox
     details = db.execute("SELECT * FROM characters WHERE first_name = ?", name.capitalize())[0]
+
+    # Read long infotext about the character from txt-file
     file_path = os.path.join(app.root_path, 'static', 'data', f'{name}.txt')
     with open(file_path, 'r') as file:
         character_info = file.read().split('\n\n')
     
+    # Get image to be displayed inside the text-block
+    # Name format of the images: charactername-action.format, charactername and format are different for every character
+    # Create list of possible image formats
     image_formats = ['png', 'jpeg', 'jpg', 'webp', 'avif', 'bmp']
+
+    # Set path of the action-image initially to none and loop through the image formats
     action_img_file = None
     for format in image_formats:
         action_img_path = f"static/img/{name}-action.{format}"
+        # If the image path above exists, we found the image and can break out of the loop
         if os.path.exists(action_img_path):
             action_img_file = action_img_path
             break
-
-    action_img_file = action_img_file.replace("static/", "")
+    
+    # If we found an action-image of the character, remove "static" from the image path, so Jinja's url for function can work with it
+    if action_img_file != None:
+        action_img_file = action_img_file.replace("static/", "")
+    # If we found no action-image of the character, set a backup image
+    else:
+        action_img_file = f"img/friends_pic07.webp"
     
     return render_template("character.html", details=details, character_info=character_info, action_img_file=action_img_file)
 
 
 @app.route('/seasons')
 def seasons():
+    # Read information about the different seasons from JSON file to display in seasons.html template
     with open('static/data/seasons_data.json') as file:
         seasons_data = json.load(file)
 
@@ -81,6 +95,7 @@ def seasons():
 
 @app.route('/quiz')
 def quiz():
+    # Read quiz questions (and solutions) from JSON file to display in quiz.html template
     with open('static/data/mini_quiz.json') as file:
         questions = json.load(file)
         
@@ -88,21 +103,20 @@ def quiz():
     return render_template("quiz.html", questions=questions)
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Log user in"""
-
+    # Log user in
     # Forget any user_id
     session.clear()
 
     # User reached route via POST (by submitting login form via POST)
     if request.method == "POST":
-
+        # Get username and password from form
         username = request.form.get("username")
         password = request.form.get("password")
         errors = {}
 
-        # Ensure username and password were submitted
+        # Ensure username and password were submitted, if not show an error
         if not username:
             errors["username_error"] = "Username required"
         if not password:
@@ -115,7 +129,7 @@ def login():
         # Query database for username
         rows = db.execute("SELECT * FROM users WHERE username = ?", username)
 
-        # Ensure username exists and password is correct
+        # Ensure username exists and password is correct, show error if not
         if len(rows) != 1 or not check_password_hash(rows[0]["hash"], password):
             errors["password_error"] =  "Incorrect username and/or password"
             return render_template("login.html", errors=errors)
@@ -123,37 +137,37 @@ def login():
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
 
-        # Redirect user to home page
-        return redirect("/")
+        # Redirect user to Members Area
+        return redirect("/membersarea")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html", errors={})
 
 
-@app.route("/logout")
+@app.route('/logout')
 def logout():
-    """Log user out"""
-
+    # Log user out
     # Forget any user_id
     session.clear()
 
-    # Redirect user to login form
+    # Redirect user to home
     return redirect("/")
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    """Register user"""
+    # Register user
+
     # User reached route via POST (by submitting the form via POST)
     if request.method == "POST":
-
+        # Get username, password and password confirmation from form
         username = request.form.get("username")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
         errors = {}
 
-        # Ensure user filled out all fields in form
+        # Ensure user filled out all fields in form, show error(s) if not
         if not username:
             errors["username_error"] = "Username required"
         if not password:
@@ -166,17 +180,18 @@ def register():
             return render_template("register.html", username=username, errors=errors)
         
         # Check if username is already taken
-        # If the dict returned by db.execute has a length greater than 0, the username exists
+        # If the list returned by db.execute has a length greater than 0, the username is already taken
+        # In that case, show error
         if len(db.execute("SELECT * FROM users WHERE username = ?", username)) > 0:
             errors["username_error"] = "Username already taken"
             return render_template("register.html", username=username, errors=errors)
         
-        # Ensure password has at least 4 characters
+        # Ensure password has at least 4 characters, show error if not
         if len(password) < 4:
             errors["password_error"] =  "Password must have at least 4 characters"
             return render_template("register.html", username=username, errors=errors)
 
-        # Check if password and password confirmation match
+        # Check if password and password confirmation match, show error if not
         if password != confirmation:
             errors["confirmation_error"] = "Confirmation and password do not match"
             return render_template("register.html", username=username, errors=errors)
@@ -189,13 +204,14 @@ def register():
         user_id = db.execute("SELECT id FROM users WHERE username = ?", username)
         session["user_id"] = user_id[0]["id"]
         
-        return redirect("/")
+        # Redirect to Members Area
+        return redirect("/membersarea")
 
     else:
         return render_template("register.html", errors={})
 
 
-@app.route("/membersarea")
+@app.route('/membersarea')
 @login_required
 def membersarea():
     # Get username from users table
@@ -224,14 +240,17 @@ def membersarea():
             memory_badges = ["Bronze", "Silver"]
         elif best_badge == "Gold":
             memory_badges = ["Bronze", "Silver", "Gold"]
+        
+    # Store links to medal images in list to pass the list to the template
+    medal_pics = ["bronze_medal_tiny.png", "silver_medal_tiny.png", "gold_medal_tiny.png"]
 
-    return render_template("membersarea.html", username=username, memory_highscore=memory_highscore, memory_badges=memory_badges)
+    return render_template("membersarea.html", username=username, memory_highscore=memory_highscore, memory_badges=memory_badges, medal_pics=medal_pics)
 
 
-@app.route("/memory", methods=["GET", "POST"])
+@app.route('/memory', methods=['GET', 'POST'])
 @login_required
 def memory():
-    # If user reached out via POST (by submitting his score via a form)
+    # If user reached out via POST (by submitting his score and times played via form)
     if request.method == "POST":
 
         # Get user's score and times_played from form
@@ -284,7 +303,7 @@ def memory():
         cards += cards
 
         # Put cards in random order
-        #random.shuffle(cards)
+        random.shuffle(cards)
 
         # Get current highscore and times_played of user from db
         user_gamedata = db.execute("SELECT highscore, times_played FROM memory WHERE user_id = ?", session["user_id"])
@@ -302,13 +321,13 @@ def memory():
         return render_template("memory.html", cards=cards, highscore=highscore, times_played=times_played)
     
 
-@app.route("/leaderboard")
+@app.route('/leaderboard')
 @login_required
 def leaderboard():
-    # Get username from users table and all data from memory table
+    # Get username and gamedata from every registered user
     memory_data = db.execute("SELECT users.username, memory.highscore, memory.times_played, memory.current_badge FROM users JOIN memory ON users.id = memory.user_id")
 
-    # Add number of badges to every user in the datalist
+    # Calculate number of badges for every user and add the data
     for dict in memory_data:
         if dict["current_badge"] == "None":
             dict["number_badges"] = 0
