@@ -32,14 +32,16 @@
                     <!-- Make three div-elements (for-loop) -->
                     {% for i in range(3) %}
                         <div class="col-2 d-flex align-items-center justify-content-center py-2 border">
+                            <!-- If we have not come to the end of the user's badges list, show picture of badge item in the i'th position -->
                             {% if i < memory_badges|length %}
                                 <img src="{{ url_for('static', filename='img/' ~ medal_pics[i]) }}" alt="Image of {{ memory_badges[i] }} Medal" class="img-fluid">
+                            <!-- If we are at the end of the user's badges list, show an image with a "Missing Lettering", the user hasn't won the badge -->
                             {% else %}
                                 <img src="{{ url_for('static', filename='img/missing.png') }}" alt="Missing Lettering" class="img-fluid">
                             {% endif %}
                         </div>
                     {% endfor %}
-                    
+
                 </div>
 
                 <!-- Last row of the Game Statistics has a different border styling -->
@@ -63,10 +65,11 @@
 
         <!-- Game Overview and Link to Leaderboard -->
         <div class="container char-cont">
+
             <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center">
                 <div class="col">
                     <div class="card shadow-lg">
-                        <img src="{{ url_for('static', filename='img/memory/memory_icon.png') }}" class="game-card-img" alt="Image of Memory Card">
+                        <img src="{{ url_for('static', filename='img/memory/memory_icon.png') }}" class="game-card-img" alt="Image of Memory Cards">
                         <div class="card-body text-center">
                             <a href="/memory" class="btn btn-secondary">Play Memory</a>
                         </div>
@@ -82,6 +85,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
         <div class="standard-textp"></div>

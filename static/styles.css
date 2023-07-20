@@ -6,10 +6,18 @@
     width: min(30vw, 150px);
 }
 
+/* Change Font of Navbar to Friends Font */
+.navbar-font {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 15px;
+}
+
+/* Add padding to the top of the page body to avoid the navbar hiding content */
 body {
     padding-top: 55px;
 }
 
+/* Avoid Footer showing up in the middle of the viewport where page-content fills less than 100vh */
 .min-vh-100 {
     min-height: 100vh;
 }
@@ -21,20 +29,6 @@ body {
 
 .font-arial {
     font-family: Arial, Helvetica, Verdana;
-}
-
-/* Make appearance of carousel indicators device-resonpive */
-.c-indicator {
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 0px;
-    width: 20vw;
-}
-
-/* Change Font of Navbar to Friends Font */
-.navbar-font {
-    font-family: 'Permanent Marker', cursive;
-    font-size: 15px;
 }
 
 .friends-font {
@@ -57,17 +51,7 @@ body {
     margin-bottom: 30px;
 }
 
-.quizQ {
-    font-family: Arial, Helvetica, Verdana;
-    font-size: 1em;
-    font-style: italic;
-}
-
-#registerBtn {
-    display: none;
-}
-
-/* Style text paragraphs in index */
+/* Standard style of text paragraphs */
 .standard-textp {
     font-family: Arial, Helvetica, Verdana;
     font-size: 1.2em;
@@ -81,8 +65,37 @@ body {
     text-align: justify;
 }
 
+/* Make appearance of carousel indicators in index.html device-resonpive */
+.c-indicator {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0px;
+    width: 20vw;
+}
+
+/* Quiz.html */
+/* Style of Quiz Question */
+.quizQ {
+    font-family: Arial, Helvetica, Verdana;
+    font-size: 1em;
+    font-style: italic;
+}
+
+/* Hide register button initially */
+#registerBtn {
+    display: none;
+}
+
+/* Seasons.html */
 .seasons-img {
     max-height: 80vh;
+}
+
+/* index.html --> Text paragraph with image: Display content in row */
+.img-right-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .img-right-column {
@@ -92,22 +105,18 @@ body {
     flex: auto;
 }
 
-/* Style paragraphs with image on right side of screen */
-.img-right-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
+/* create a little bit of spacing on the left side of the image */
 #friends_pic07 {
     margin: 0 0 0 30px;
 }
 
+/* Style of Character Grid Cards in index.html */
 .char-card-img {
     height: min(50vh, 300px);
     object-fit: contain;
 }
 
+/* Style of Game Grid Cards in membersarea.html */
 .game-card-img {
     max-width: 50%;
     height: auto;
@@ -115,10 +124,13 @@ body {
     margin: auto;
 }
 
+/* character.html: Remove list indicators on card with character information */
 .char-details {
     list-style-type: none;
 }
 
+/* Popup Modals */
+/* Hide page content while showing a Pop Up Modal */
 .page-overlay {
     position: fixed;
     top: 0;
@@ -131,15 +143,18 @@ body {
     display: none;
 }
 
+/* Disable scrolling */
 .no-scrolling {
-    /* Disable scrolling */
     overflow: hidden;
 }
 
+/* Set z-index of the modal higher than the z-index of page-overlay to show the modal on the page-overlay */
 .modal {
     z-index: 1000;
 }
 
+/* fixed-top is a Bootstrap class to fix the navbar on top of the screen */
+/* Set z-index to a lower value than the z-index of the page-overlay, so that the overlay always covers the navbar */
 .fixed-top {
     z-index: 998;
 }
@@ -148,6 +163,7 @@ body {
     max-height: 420px;
 }
 
+/* memory.html */
 .mem-gameboard-container {
     /* Create device responsive memory gameboard. All cards are visible on screen without the need to scroll. */
     /* Set the width to the minimum of 1. 80% of the visible viewport height or 2. 95% of the visible viewport width or 3. max. 640px */
@@ -190,6 +206,7 @@ body {
     max-width: 720px;
 }
 
+/* leaderboard.html */
 /* Show only current page, previous and next button in leaderboard footer navigation */
 ul li.paginate_button.page-item:not(.next):not(.previous):not(.active) {
     display: none;
@@ -200,10 +217,20 @@ ul li.paginate_button.page-item:not(.next):not(.previous):not(.active) {
     overflow: auto;
 }
 
-/* Remove "sorting arrows from leaderboard columns, where sorting is disabled */
+/* Remove "sorting arrows" from leaderboard columns, where sorting is disabled */
 #leaderboard th.disable-sorting::before,
 #leaderboard th.disable-sorting::after {
     visibility: hidden !important;
+}
+
+/* Container, which does not exceed the width of Bootstrap md-container */
+.char-cont {
+    max-width: 720px;
+}
+
+/* Container, which does not exceed the width of Bootstrap sm-container */
+.container-max-sm {
+    max-width: 540px;
 }
 
 @media (max-width: 768px) {
@@ -217,10 +244,11 @@ ul li.paginate_button.page-item:not(.next):not(.previous):not(.active) {
 }
 
 @media (min-width: 768px) {
-    .char-cont {
+    /*.char-cont {
         width: 720px;
-    }
+    } */
 
+    /* Display content in the center of the screen on medium and large devices */
     .quiz-row {
         display: flex;
         align-items: center;
@@ -229,20 +257,24 @@ ul li.paginate_button.page-item:not(.next):not(.previous):not(.active) {
 }
 
 @media (min-width: 576px) {
-    .container-max-sm {
+    /* .container-max-sm {
         width: 540px;
-    }
+    } */
 }
 
 @media (max-width: 992px) {
+    /* For smaller screens: Set max-height for picture in descriptive text in character.html to 80 vh...
+    to always make the image fully visible without needing to scroll */
     .char-description-pic {
         max-height: 80vh;
     }
 
+    /* index.html --> For smaller devices: Change flex-direction of image in descriptive text and... */
     .img-right-row {
         flex-direction: column;
     }
 
+    /* ...ensure the image itself is centered and does not overflow on the x-axis */
     #friends_pic07 {
         margin: 0px auto 30px auto;
         display: block;

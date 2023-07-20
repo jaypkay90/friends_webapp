@@ -44,11 +44,13 @@
         <!-- Memory Gameboard with cards -->
         <div class="mem-gameboard-container">
             <div class="mem-gameboard">
+
                 {% for card in cards %}
                     <div class="mem-cell">
                         <img src="{{ url_for('static', filename='img/memory/')}}{{ card['back'] }}" data-front="{{ card['front'] }}" class="border border-dark mem-card" alt="Memory Card">
                     </div>
                 {% endfor %}
+
             </div>
         </div>
 
@@ -93,7 +95,7 @@
                             <div class="d-flex justify-content-between">
                                 <h3 class="friends-font my-auto">Your Result</h3>
 
-                                <!-- Form for submitting user score, value attribute of input tag is filled by JS -->
+                                <!-- Form for submitting user score and times played, value attributes of input tags are filled by JS -->
                                 <form action="/memory" method="post">
                                     <input type="hidden" id="scoreInput" name="score" value="" />
                                     <input type="hidden" id="timesPlayedInput" name="timesPlayed" value="" />
