@@ -5,6 +5,7 @@
         const highscore = {{ highscore | tojson | safe }}
         let times_played = {{ times_played | tojson | safe }}
     </script>
+    <script src="{{ url_for('static', filename='memory.js') }}"></script>
 {% endblock %}
 
 {% block title %}
