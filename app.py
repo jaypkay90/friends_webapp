@@ -21,6 +21,10 @@ Session(app)
 # Configure usability of SQLite database
 db = SQL("sqlite:///friends_webapp.db")
 
+# List of available games in the app
+# Type in the tablenames of the tables, where the game data for any specific game is stored
+# Example: I want to add the game "memory" and the data of that game is stored in the table "memory"
+games=["memory"]
 
 @app.after_request
 def after_request(response):
@@ -74,7 +78,7 @@ def character_details(name):
             action_img_file = action_img_path
             break
     
-    # If we found an action-image of the character, remove "static" from the image path, so Jinja's url for function can work with it
+    # If we found an action-image of the character, remove "static" from the image path, so Jinja's url_for function can work with it
     if action_img_file != None:
         action_img_file = action_img_file.replace("static/", "")
     # If we found no action-image of the character, set a backup image
@@ -217,6 +221,22 @@ def membersarea():
     # Get username from users table
     username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
 
+    # Create an initally empty list to store the game data
+    gamedata=[]
+
+    # Loop through the list of games
+    for game in games:
+        # Get gamedata for current game and add the dictionary with the data to the gamedata list
+        gamedata.append(get_gamedata(game))
+        
+    # Store links to medal images in list to pass the list to the template
+    medal_pics = ["bronze_medal_tiny.png", "silver_medal_tiny.png", "gold_medal_tiny.png"]
+    return render_template("membersarea.html", username=username, gamedata=gamedata, medal_pics=medal_pics, games=games)
+
+'''def membersarea():
+    # Get username from users table
+    username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
+
     # Get memory gamedata from memory table
     memory_data = db.execute("SELECT highscore, current_badge FROM memory WHERE user_id = ?", session["user_id"])
 
@@ -244,7 +264,40 @@ def membersarea():
     # Store links to medal images in list to pass the list to the template
     medal_pics = ["bronze_medal_tiny.png", "silver_medal_tiny.png", "gold_medal_tiny.png"]
 
-    return render_template("membersarea.html", username=username, memory_highscore=memory_highscore, memory_badges=memory_badges, medal_pics=medal_pics)
+    return render_template("membersarea.html", username=username, memory_highscore=memory_highscore, memory_badges=memory_badges, medal_pics=medal_pics)'''
+
+def get_gamedata(game):
+    # Get gamedata from database table and append the data to the dictionary
+    data = db.execute("SELECT highscore, current_badge FROM ? WHERE user_id = ?", game, session["user_id"])
+    
+    # If user never played before, redefine data as dictionary
+    # Set user's highscore to 0 and make list of badges empty
+    # Comment: It would have been possible to insert the user (who never played before) into the game data table
+    # I decided to not do that, because that could potentially lead to a lot of useless data in the game data tables
+    # from users who only register but never play. All these useless "zeros" would also show up in the leaderboard
+    if len(data) != 1:
+       data = {"highscore": 0, "badges": []}
+    
+    # If user played before, "convert" list from database table into dictionary
+    else:
+        data = data[0]
+
+         # "Calc" badges and add key to data dictionary
+        best_badge = data["current_badge"]
+        if best_badge == "None":
+           data["badges"] = []
+        if best_badge == "Bronze":
+            data["badges"] = ["Bronze"]
+        elif best_badge == "Silver":
+            data["badges"] = ["Bronze", "Silver"]
+        elif best_badge == "Gold":
+            data["badges"] = ["Bronze", "Silver", "Gold"]
+
+    # Add key with the name of the game to the dictionary
+    data["name"] = game
+    
+    # Return dictionary with gamedata
+    return data
 
 
 @app.route('/memory', methods=['GET', 'POST'])
@@ -325,6 +378,37 @@ def memory():
 @login_required
 def leaderboard():
     # Get username and gamedata from every registered user
+    # Make list with gamedata initially empty
+    gamedata = []
+
+    # Loop through list of games
+    for game in games:
+        # Get game-stats of current game from database
+        current_game_data = db.execute("SELECT users.username, ?.highscore, ?.times_played, ?.current_badge FROM users JOIN ? ON users.id = ?.user_id", game, game, game, game, game)
+
+        # Loop through the dictionaries in the datalist for the current game
+        for dict in current_game_data:
+            # Calculate number of badges for every user and add the key to the data
+            if dict["current_badge"] == "None":
+                dict["number_badges"] = 0
+            elif dict["current_badge"] == "Bronze":
+                dict["number_badges"] = 1
+            elif dict["current_badge"] == "Silver":
+                dict["number_badges"] = 2
+            # If user already won the Gold badge...    
+            else:
+                dict["number_badges"] = 3
+
+        # Add the name of the game to the datalist
+        current_game_data = {game: current_game_data}
+
+        # Finally: Add data of the current game to the complete gamedata list
+        gamedata.append(current_game_data)
+
+    return render_template("leaderboard.html", gamedata=gamedata, games=games)
+
+'''def leaderboard():
+    # Get username and gamedata from every registered user
     memory_data = db.execute("SELECT users.username, memory.highscore, memory.times_played, memory.current_badge FROM users JOIN memory ON users.id = memory.user_id")
 
     # Calculate number of badges for every user and add the data
@@ -339,7 +423,7 @@ def leaderboard():
         else:
             dict["number_badges"] = 3
 
-    return render_template("leaderboard.html", memory_data=memory_data)
+    return render_template("leaderboard.html", memory_data=memory_data)'''
 
 #SELECT users.username, memory.highscore, memory.times_played, memory.current_badge FROM users JOIN memory ON users.id = memory.user_id;
 #INSERT INTO characters (first_name, char_picture, full_name, birthday, gender, spouses, main_job, portrayed_by)

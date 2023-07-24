@@ -2,7 +2,7 @@
 
 {% block additional_js %}
     <script>
-        const questions = {{ questions | tojson | safe }}
+        const questions = {{ questions | tojson | safe }};
     </script>
     <script src="{{ url_for('static', filename='quiz.js') }}"></script>
 {% endblock %}

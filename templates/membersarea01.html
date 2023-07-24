@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+
+{% block additional_js %}
+   
+{% endblock %}
+
+{% block title %}
+	Members Area
+{% endblock %}
+
+{% block main %}
+    <div class="container min-vh-100">
+        <div class="standard-textp"></div>
+        <h1 class="friends-font margin-bottom-10 text-center">Members Area</h1>
+        <div class="standard-textp"></div>
+
+        <!-- Grid with Game Statistics of user currently logged in -->
+        <div class="overflow-auto">
+            <div class="container gamestats-cont friends-font card bg-secondary bg-gradient bg-opacity-50">    
+                <div class="row">
+                    <div class="col-12 d-flex align-items-center justify-content-center py-2 border-bottom text-danger"><h4>{{ username }}</h4></div>
+                </div>
+                <div class="row">
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-start-0 text-success">Game</div>
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border text-success">Highscore</div>
+                    <div class="col-6 d-flex align-items-center justify-content-center py-2 border border-end-0 text-success">Badges</div>
+                </div>
+                <div class="row">
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-start-0">Memory</div>
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border">{{ memory_highscore }}</div>
+                    
+                    <!-- Make three div-elements (for-loop) -->
+                    {% for i in range(3) %}
+                        <div class="col-2 d-flex align-items-center justify-content-center py-2 border">
+                            <!-- If we have not come to the end of the user's badges list, show picture of badge item in the i'th position -->
+                            {% if i < memory_badges|length %}
+                                <img src="{{ url_for('static', filename='img/' ~ medal_pics[i]) }}" alt="Image of {{ memory_badges[i] }} Medal" class="img-fluid">
+                            <!-- If we are at the end of the user's badges list, show an image with a "Missing Lettering", the user hasn't won the badge -->
+                            {% else %}
+                                <img src="{{ url_for('static', filename='img/missing.png') }}" alt="Missing Lettering" class="img-fluid">
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+                <!-- Last row of the Game Statistics has a different border styling -->
+                <!--<div class="row">
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-start-0 border-bottom-0">Memory</div>
+                    <div class="col-3 d-flex align-items-center justify-content-center py-2 border border-bottom-0">{{ memory_highscore }}</div>
+                    <div class="col-2 d-flex align-items-center justify-content-center py-2 border border-bottom-0">
+                        <img src="static/img/bronze_medal_tiny.png" class="img-fluid" alt="Image of Bronze Medal border-bottom-0">
+                    </div>
+                    <div class="col-2 d-flex align-items-center justify-content-center py-2 border border-bottom-0">
+                        <img src="static/img/missing.png" class="img-fluid" alt="Missing Lettering">
+                    </div>
+                    <div class="col-2 d-flex align-items-center justify-content-center py-2 border border-end-0 border-bottom-0">
+                        <img src="static/img/missing.png" class="img-fluid" alt="Missing Lettering">
+                    </div>
+                </div>-->
+            </div>
+        </div>
+
+        <div class="standard-textp"></div>
+
+        <!-- Game Overview and Link to Leaderboard -->
+        <div class="container char-cont">
+
+            <div class="row g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center">
+                <div class="col">
+                    <div class="card shadow-lg">
+                        <img src="{{ url_for('static', filename='img/memory/memory_icon.png') }}" class="game-card-img" alt="Image of Memory Cards">
+                        <div class="card-body text-center">
+                            <a href="/memory" class="btn btn-secondary">Play Memory</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="card shadow-lg">
+                        <img src="{{ url_for('static', filename='img/trophy.png') }}" class="game-card-img" alt="Image of a trophy">
+                        <div class="card-body text-center">
+                            <a href="/leaderboard" class="btn btn-secondary">View Leaderboard</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="standard-textp"></div>
+    </div>
+{% endblock %}

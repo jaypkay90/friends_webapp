@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					show_modal();
 				}
 			}
-			// If time stamp flag does not yet exist, show modal
+			// If time stamp flag does not exist yet, show modal
 			else {
 				show_modal();
 			}
