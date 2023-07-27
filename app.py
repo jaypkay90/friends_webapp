@@ -24,7 +24,7 @@ db = SQL("sqlite:///friends_webapp.db")
 # List of available games in the app
 # Type in the tablenames of the tables, where the game data for any specific game is stored
 # Example: I want to add the game "memory" and the data of that game is stored in the table "memory"
-games=["memory"]
+games=["memory", "puzzle"]
 
 @app.after_request
 def after_request(response):
@@ -233,38 +233,6 @@ def membersarea():
     medal_pics = ["bronze_medal_tiny.png", "silver_medal_tiny.png", "gold_medal_tiny.png"]
     return render_template("membersarea.html", username=username, gamedata=gamedata, medal_pics=medal_pics, games=games)
 
-'''def membersarea():
-    # Get username from users table
-    username = db.execute("SELECT username FROM users WHERE id = ?", session["user_id"])[0]["username"]
-
-    # Get memory gamedata from memory table
-    memory_data = db.execute("SELECT highscore, current_badge FROM memory WHERE user_id = ?", session["user_id"])
-
-    # If user never played memory before, set highscore to 0 and make list of badges empty
-    if len(memory_data) != 1:
-        memory_highscore = 0
-        memory_badges = []
-
-    # If user played before...
-    else:
-        # Take highscore from database
-        memory_highscore = memory_data[0]["highscore"]
-
-        # "Calc" badges
-        best_badge = memory_data[0]["current_badge"]
-        if best_badge == "None":
-            memory_badges = []
-        if best_badge == "Bronze":
-            memory_badges = ["Bronze"]
-        elif best_badge == "Silver":
-            memory_badges = ["Bronze", "Silver"]
-        elif best_badge == "Gold":
-            memory_badges = ["Bronze", "Silver", "Gold"]
-        
-    # Store links to medal images in list to pass the list to the template
-    medal_pics = ["bronze_medal_tiny.png", "silver_medal_tiny.png", "gold_medal_tiny.png"]
-
-    return render_template("membersarea.html", username=username, memory_highscore=memory_highscore, memory_badges=memory_badges, medal_pics=medal_pics)'''
 
 def get_gamedata(game):
     # Get gamedata from database table and append the data to the dictionary
@@ -272,9 +240,9 @@ def get_gamedata(game):
     
     # If user never played before, redefine data as dictionary
     # Set user's highscore to 0 and make list of badges empty
-    # Comment: It would have been possible to insert the user (who never played before) into the game data table
-    # I decided to not do that, because that could potentially lead to a lot of useless data in the game data tables
-    # from users who only register but never play. All these useless "zeros" would also show up in the leaderboard
+    ''' Comment: It would have been possible to insert the user (who never played before) into the game data table here
+    I decided to not do that, because that could potentially lead to a lot of useless data in the game data tables
+    from users who only register but never play. All these useless "zeros" would also show up in the leaderboard '''
     if len(data) != 1:
        data = {"highscore": 0, "badges": []}
     
@@ -306,39 +274,8 @@ def memory():
     # If user reached out via POST (by submitting his score and times played via form)
     if request.method == "POST":
 
-        # Get user's score and times_played from form
-        score = int(request.form.get("score"))
-        times_played = int(request.form.get("timesPlayed"))
-
-        # Calc current badge
-        if (times_played < 2):
-            current_badge = "None"
-        elif (times_played < 5):
-            current_badge = "Bronze"
-        elif (times_played < 10):
-            current_badge = "Silver"
-        else:
-            current_badge = "Gold"
-
-        # Check if user that is currently logged in already played memory
-        user_gamedata = db.execute("SELECT * FROM memory WHERE user_id = ?", session["user_id"])
-
-        # If user never played before, insert stats of game into memory table
-        if len(user_gamedata) != 1:
-            db.execute("INSERT INTO memory (user_id, highscore, times_played, current_badge) SELECT users.id, ?, ?, ? FROM users WHERE users.id = ?", score, times_played, current_badge, session["user_id"])
-
-        # If user played before, update data
-        else:
-            # If user produced new highscore, update data and insert score into highscore column
-            if (user_gamedata[0]["highscore"]) <= score:
-                db.execute("UPDATE memory SET highscore = ?, times_played = ?, current_badge = ? WHERE user_id = (SELECT id FROM users WHERE id = ?)", score, times_played, current_badge, session["user_id"])
-
-            # If no new highscore, update data, but leave highscore column as it is    
-            else:
-                db.execute("UPDATE memory SET times_played = ?, current_badge = ? WHERE user_id = (SELECT id FROM users WHERE id = ?)", times_played, current_badge, session["user_id"])
-
-        # Redirect to members area
-        return redirect("/membersarea")
+        # Insert user statistics into game table
+        return insert_user_stats("memory")
     
     # If user reached out via Get
     else:
@@ -358,21 +295,119 @@ def memory():
         # Put cards in random order
         random.shuffle(cards)
 
-        # Get current highscore and times_played of user from db
-        user_gamedata = db.execute("SELECT highscore, times_played FROM memory WHERE user_id = ?", session["user_id"])
-        
-        # If user never played before, set highscore and times_played to 0
-        if len(user_gamedata) != 1:
-            highscore = 0
-            times_played = 0
-        
-        # If user played before, take data from dictionary of table data
-        else:
-            highscore = user_gamedata[0]["highscore"]
-            times_played = user_gamedata[0]["times_played"]
+        # Get current user stats from game table
+        highscore, times_played = get_current_stats("memory")
 
-        return render_template("memory.html", cards=cards, highscore=highscore, times_played=times_played)
+        return render_template("memory.html", game="memory", cards=cards, highscore=highscore, times_played=times_played)
+
+
+def get_current_stats(game):
+    # Get current highscore and times_played of user from db
+    user_gamedata = db.execute("SELECT highscore, times_played FROM ? WHERE user_id = ?", game, session["user_id"])
     
+    # If user never played before, set highscore and times_played to 0
+    if len(user_gamedata) != 1:
+        highscore = 0
+        times_played = 0
+    
+    # If user played before, take data from dictionary of table data
+    else:
+        highscore = user_gamedata[0]["highscore"]
+        times_played = user_gamedata[0]["times_played"]
+    
+    return highscore, times_played
+
+
+def insert_user_stats(game):
+     # Get user's score and times_played from form
+    score = int(request.form.get("score"))
+    times_played = int(request.form.get("timesPlayed"))
+
+    # Calc current badge
+    if (times_played < 2):
+        current_badge = "None"
+    elif (times_played < 5):
+        current_badge = "Bronze"
+    elif (times_played < 10):
+        current_badge = "Silver"
+    else:
+        current_badge = "Gold"
+
+    # Check if user that is currently logged in already played memory
+    user_gamedata = db.execute("SELECT * FROM ? WHERE user_id = ?", game, session["user_id"])
+
+    # If user never played before, insert stats of game into memory table
+    if len(user_gamedata) != 1:
+        db.execute("INSERT INTO ? (user_id, highscore, times_played, current_badge) SELECT users.id, ?, ?, ? FROM users WHERE users.id = ?", game, score, times_played, current_badge, session["user_id"])
+
+    # If user played before, update data
+    else:
+        # If user produced new highscore, update data and insert score into highscore column
+        if (user_gamedata[0]["highscore"]) <= score:
+            db.execute("UPDATE ? SET highscore = ?, times_played = ?, current_badge = ? WHERE user_id = (SELECT id FROM users WHERE id = ?)", game, score, times_played, current_badge, session["user_id"])
+
+        # If no new highscore, update data, but leave highscore column as it is    
+        else:
+            db.execute("UPDATE ? SET times_played = ?, current_badge = ? WHERE user_id = (SELECT id FROM users WHERE id = ?)", game, times_played, current_badge, session["user_id"])
+
+    # Redirect to members area
+    return redirect("/membersarea")
+
+
+@app.route('/puzzle', methods=['GET', 'POST'])
+@login_required
+def puzzle():
+    # If user reached out via POST (by submitting his score and times played via form)
+    if request.method == "POST":
+
+        # Insert user statistics into game table
+        return insert_user_stats("puzzle")
+
+    # If user reached out via GET
+    else:
+        # Create list for puzzle pieces
+        pieces = []
+
+        # Append numbers 1 to 9 to list
+        for piece in range(9):
+            pieces.append(piece + 1)
+
+        # Copy list to create puzzle
+        #pieces = correct_order.copy()
+        #pieces = [1, 2, 3, 4, 5, 6, 7, 9, 8]
+
+        # "Shuffle" pieces in a solvable way
+        ''' https://www.cs.princeton.edu/courses/archive/spring21/cos226/assignments/8puzzle/specification.php
+        "Given a board, an inversion is any pair of tiles i and j where i < j but i appears after j [on the board]"
+        Puzzle with odd number of pieces (we have 9 pieces): Puzzle is solvable when number of inversions is even'''
+        is_solvable = False
+
+        # While puzzle unsolvable
+        while (is_solvable == False):
+            # Set number of inversions to 0
+            inversions = 0
+
+            # "Shuffle" pieces and check if solvable
+            random.shuffle(pieces)
+
+            # Compare pieces with one another
+            for i in range(len(pieces)):
+                for j in range(i + 1, len(pieces)):
+                    # The two for-loops make sure, that i is always < j
+                    # If the number at position i is greater than the number at position j, we have an inversion
+                    if (pieces[i] > pieces[j]):
+                        inversions += 1
+
+            # After we compared the pieces with one another:
+            # If the number of inversions is even, the puzzle is solvable
+            if (inversions % 2 == 0):
+                is_solvable = True
+
+        # Get current user stats from game table
+        highscore, times_played = get_current_stats("puzzle")
+
+        return render_template("puzzle.html", game="puzzle", pieces=pieces, highscore=highscore, times_played=times_played)
+
 
 @app.route('/leaderboard')
 @login_required
@@ -406,25 +441,3 @@ def leaderboard():
         gamedata.append(current_game_data)
 
     return render_template("leaderboard.html", gamedata=gamedata, games=games)
-
-'''def leaderboard():
-    # Get username and gamedata from every registered user
-    memory_data = db.execute("SELECT users.username, memory.highscore, memory.times_played, memory.current_badge FROM users JOIN memory ON users.id = memory.user_id")
-
-    # Calculate number of badges for every user and add the data
-    for dict in memory_data:
-        if dict["current_badge"] == "None":
-            dict["number_badges"] = 0
-        elif dict["current_badge"] == "Bronze":
-            dict["number_badges"] = 1
-        elif dict["current_badge"] == "Silver":
-            dict["number_badges"] = 2
-        # If user already won the Gold badge...    
-        else:
-            dict["number_badges"] = 3
-
-    return render_template("leaderboard.html", memory_data=memory_data)'''
-
-#SELECT users.username, memory.highscore, memory.times_played, memory.current_badge FROM users JOIN memory ON users.id = memory.user_id;
-#INSERT INTO characters (first_name, char_picture, full_name, birthday, gender, spouses, main_job, portrayed_by)
-#VALUES ("Ross", "ross-free.png", "Ross Geller", "October 18, 1967", "Male", "Carol Willick (1989 - 1994), Emily Waltham (1998 - 1999), Rachel Green (1999 - 1999)", "Paleontologist", "David Schwimmer");

@@ -1,0 +1,28 @@
+{% extends "layout_game.html" %}
+
+{% block additional_js %}
+    <script>
+        const highscore = {{ highscore | tojson | safe }};
+        let times_played = {{ times_played | tojson | safe }};
+    </script>
+    <script src="{{ url_for('static', filename='puzzle.js') }}"></script>
+{% endblock %}
+
+{% block gameboard %}
+
+    <!-- Puzzle Gameboard -->
+    <div class="puzzle-gameboard-container">
+        <div class="puzzle-gameboard">
+
+            {% for piece in pieces %}
+                <div class="puzzle-cell" id="cell-{{ loop.index }}">
+                    <img src="{{ url_for('static', filename='img/puzzle/puzzle-0')}}{{ piece }}.png" class="puzzle-piece" alt="Puzzle Piece" draggable="true">
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <h2 class="friends-font mt-3 text-center text-success" id="congratulation"></h2>
+
+{% endblock %}

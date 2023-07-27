@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layout_game.html" %}
 
 {% block additional_js %}
     <script>
@@ -8,121 +8,19 @@
     <script src="{{ url_for('static', filename='memory.js') }}"></script>
 {% endblock %}
 
-{% block title %}
-	Memory
-{% endblock %}
+{% block gameboard %}
 
-{% block main %}
-    <div class="container vh-100">
-        <div class="standard-textp"></div>
+    <!-- Memory Gameboard with cards -->
+    <div class="mem-gameboard-container">
+        <div class="mem-gameboard">
 
-        <!-- Game Statistics -->
-        <div class="container container-max-sm pb-3">
-            <div class="row row-cols-3 friends-font">
-                <div class="col text-center">
-                    Time
+            {% for card in cards %}
+                <div class="mem-cell">
+                    <img src="{{ url_for('static', filename='img/memory/')}}{{ card['back'] }}" data-front="{{ card['front'] }}" class="border border-dark mem-card" alt="Memory Card">
                 </div>
-                <div class="col text-center">
-                    Points
-                </div>
-                <div class="col text-center">
-                    Moves
-                </div>
-            </div>
-            <div class="row row-cols-3 font-arial text-success fw-bold">
-                <div class="col text-center" id="time">
-                    00:00
-                </div>
-                <div class="col text-center" id="points">
-                    0
-                </div>
-                <div class="col text-center" id="moves">
-                    0
-                </div>
-            </div>
-        </div>
+            {% endfor %}
 
-        <!-- Memory Gameboard with cards -->
-        <div class="mem-gameboard-container">
-            <div class="mem-gameboard">
-
-                {% for card in cards %}
-                    <div class="mem-cell">
-                        <img src="{{ url_for('static', filename='img/memory/')}}{{ card['back'] }}" data-front="{{ card['front'] }}" class="border border-dark mem-card" alt="Memory Card">
-                    </div>
-                {% endfor %}
-
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Add Badge Modal Pop Up -->
-    <div class="container">
-        <div class="modal" tabindex="-1" role="dialog" id="BadgeModal">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="card bg-secondary bg-gradient bg-opacity-50">                
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between">
-                                <h3 class="friends-font my-auto">Your Badge</h3>
-                                <button type="button" class="my-auto close-button" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-body friends-font text-center">
-                            <div class="medal-container">
-                                <img src="{{ url_for('static', filename='img/bronze_medal.png') }}" id="BadgeImg" class="img-fluid" alt="Picture of Badge">
-                            </div>
-
-                            <!-- Display Badge - Filled out by JS -->
-                            <h4 class="pt-3 text-success" id="displayBadge"></h4>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Result Modal Pop Up -->
-    <div class="container">
-        <div class="modal" tabindex="-1" role="dialog" id="ResultModal">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="card bg-secondary bg-gradient bg-opacity-50">                
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between">
-                                <h3 class="friends-font my-auto">Your Result</h3>
-
-                                <!-- Form for submitting user score and times played, value attributes of input tags are filled by JS -->
-                                <form action="/memory" method="post">
-                                    <input type="hidden" id="scoreInput" name="score" value="" />
-                                    <input type="hidden" id="timesPlayedInput" name="timesPlayed" value="" />
-                                    <button type="submit" class="my-auto close-button" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </form>
-
-
-                            </div>
-                        </div>
-                        <div class="card-body friends-font text-center">
-                            <img src="{{ url_for('static', filename='img/score.png') }}" class="img-fluid" id="ScoreImg" alt="Score Lettering">
-
-                            <!-- Display user score - Filled out by JS -->
-                            <h3 class="text-danger" id="newHighscore"></h3>
-                            <h3 class="pt-3 text-success" id="displayScore"></h3>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     
-    <div class="page-overlay"></div>
-
-    <div class="standard-textp"></div>
 {% endblock %}

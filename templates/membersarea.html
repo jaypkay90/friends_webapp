@@ -64,7 +64,7 @@
                 {% for game in games %}
                     <div class="col">
                         <div class="card shadow-lg">
-                            <img src="{{ url_for('static', filename='img/memory/' + game + '_icon.png') }}" class="game-card-img" alt="{{ game.capitalize() }} image">
+                            <img src="{{ url_for('static', filename='img/' + game + '/' + game + '_icon.png') }}" class="game-card-img" alt="{{ game.capitalize() }} image">
                             <div class="card-body text-center">
                                 <a href="/{{ game }}" class="btn btn-secondary">Play {{ game.capitalize() }} </a>
                             </div>
