@@ -159,6 +159,11 @@ document.addEventListener('DOMContentLoaded', function() {
             points += (60 - total_seconds);
         }
 
+        // The user always gets at least one point for every match
+        if (points <= 0) {
+            points = 1;
+        }
+
         // UPDATE TOTAL POINTS
         total_points += points;
         points_element.innerHTML = total_points;
@@ -278,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
             new_highscore.classList.add("pt-3");
             new_highscore.textContent = `New Highscore!`;
             score_img.src = `/static/img/highscore.png`;
-            display_score.textContent = `You scored ${total_points} points!`;
+            display_score.textContent = `You scored ${total_points} points!`
         }
     }
 

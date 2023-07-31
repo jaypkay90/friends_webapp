@@ -161,9 +161,9 @@ Once the user provided a valid username and a valid password (and confirmed it),
 
 #### "/membersarea" (membersarea.html)
 
-Behind the login wall, the user has access to mini games. The user can play these games (I integrated one game, more games can be added), win badges, improve his highscore and measure his accomplishments with those of all other app users.
+Behind the login wall, the user has access to mini games. The user can play these games (I integrated two games, more games can be added), win badges, improve his highscore and measure his accomplishments with those of all other app users.
 
-On top of the "/membersarea"-route, the user sees a grid with his name and his accomplishments. The user's accomplishments are stored in different databases (one database per game). Once the user reaches out to the "/membersarea"-route via GET, Python executes mulitple SQLite queries by calling a function called get_gamedata for every available game. The data is collected in a list called "gamedata", which is ultimately passed to the template.
+On top of the "/membersarea"-route, the user sees a grid with his name and his accomplishments. The user's accomplishments are stored in different databases (one database per game). Once the user reaches out to the "/membersarea"-route via GET, Python executes mulitple SQLite queries by calling a function called "get_gamedata" for every available game. The data is collected in a list called "gamedata", which is ultimately passed to the template.
 
 ```python
 # Get username from users table
@@ -207,16 +207,17 @@ On the page, for every game, the user sees his current highscore and all badges 
 {% endfor %}
 ```
 
-Below the grid with the user's accomplishments, an overview of the available games as well as a link to the leaderboard are displayed in a grid of cards. Every card contains a picture of the particular game as well as a link to that game. To achieve this, I simply looped through the list of games and created one card per game.
+Below the grid with the user's accomplishments, an overview of all available games as well as a link to the leaderboard are displayed in a grid of cards. Every card contains a picture of the particular game as well as a link to that game. To achieve this, I simply looped through the list of games and created one card per game.
 
 #### "/leaderboard" (leaderboard.html):
 
-The "/leaderboard"-route shows a device-responsive data-table for every availabe game. Inide each game table, the data of every user who already played that specific game, shows up in one single row. The tables are initially sorted by "Highscore", meaning the user with the highest "Highscore" is displayed on top of the table and the other users follow in descending oder depending on their current highscore.
-The user is also able to sort the tables by other columns, i.e. by "Badges" or "Times played". To do this, he just needs to click either an arrow-up or an arrow-down indicator on the right side of the column he wants to sort the data by.
-I took the basic structure for the data-table from "datatables.net" and used their documentation to enable and disable certain table-features and to adjust the table's style. I also added a table heading to every table with Java Script. Since the tables are created dynamically with JS, I had to use JS to create these table headings.
+The "/leaderboard"-route shows multiple device-responsive data-tables: One overall table with the accumulated accomplishments from every single user as well as one table for every available game.
+Inide each game table, the data of every user who already played that specific game shows up in one single row. The tables are initially sorted by "Highscore", meaning the user with the highest "Highscore" is displayed on top of the table and the other users follow in descending oder depending on their current highscore.
+The user is also able to sort the tables by other columns, i.e. by "Badges" or "Times played". To do this, he just needs to click either an arrow-up- or an arrow-down-indicator on the right side of the column he wants to sort the data by.
+I took the basic structure for the data-tables from "datatables.net" and used their documentation to enable and disable certain table-features and to adjust the style of the tables. I also added a table heading to every table with Java Script. Since the tables are created dynamically with JS, I had to use JS to create these table headings.
 
 ```JavaScript
-function add_table_heading() {
+function add_table_heading(gamename) {
     // Put a heading with the game name above the table
     // Create an h3 element
     const table_heading = document.createElement('h3');
@@ -225,18 +226,18 @@ function add_table_heading() {
     // Capitalize the first letter of the game name
     // game.charAt(0).toUpperCase(): Convert first letter of game name to uppercase
     // game.slice(1): Take the game name and slice of the first letter
-    game_first_cap = game.charAt(0).toUpperCase() + game.slice(1);
+    game_first_cap = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
     // Put capitalized game name into h3-Element
     table_heading.textContent = game_first_cap;
 
     // Append the h3 element before the table
-    const table_wrapper = document.getElementById(`${game}_wrapper`);
+    const table_wrapper = document.getElementById(`${gamename}_wrapper`);
     table_wrapper.parentNode.insertBefore(table_heading, table_wrapper);
 }
 ```
 
-The data displayed in the tables is passed to the Jinja template by Python. In app.py, the data which ultimately shows up in the tables, is "collected" by executing SELECT queries on the database.
+The data displayed in the tables is passed to the Jinja template by Python. In app.py, the data which ultimately shows up in the tables, is "collected" by executing SELECT queries on the database. The data, which shows up in the overall table on top of the page is generated in a seperate function called "generate_overall_table".
 
 #### "/memory" (memory.html)
 
@@ -260,7 +261,9 @@ cards += cards
 random.shuffle(cards)
 ```
 
-On top of the page, one can see a horizontal row with a "timer", a "score" and a "moves" column. The timer starts at "00:00" and updates every second, until the user fiends two matching cards. Once he does, the timer starts again. Depending on how long it took the user to find two matching cards, his score is either "better" or "worse". The score is calculated as follows: For every match the user gets 50 "base points". If he needs less than a minute to make a match, the remaining seconds left to one minute are added to his score. The "moves" column also affects the user's score. It simply tracks how many cards the user turned over. It starts at 0 and is reset back to 0 whenever the user makes a match. Obviously the "moves" variable is also a good indicator of how good of a memory player the user is. A player who needs ten moves on average to make a match is "better" than a player who needs only two moves on average two make a match. Two moves is the best possible outcome. If the user needed only two moves to make a match, he just turned over two cards and those two cards matched. With this in mind, I decided to subtract the difference between the number of moves a player needed to make a match and 2 from his base score.
+The HTML template for each available game build up on a template called "layout_game.html", because all games share certain styling elements and features to ensure consistency in terms of style and usability. On top of each game page, one can see a horizontal row with a "timer", a "score" and a "moves" column.
+
+When the user reaches out to the memory route via GET, the timer immediately starts at "00:00" and updates every second, until the user fiends two matching cards. Once he does, the timer starts again. Depending on how long it took the user to find two matching cards, his score is either "better" or "worse". The score is calculated as follows: For every match the user gets 50 "base points". If he needs less than a minute to make a match, the remaining seconds left to one minute are added to his score. The "moves" column also affects the user's score. It simply tracks how many cards the user turned over. It starts at 0 and is reset back to 0 whenever the user makes a match. Obviously the "moves" variable is also a good indicator of how good of a memory player the user is. A player who needs ten moves on average to make a match is "worse" than a player who needs only two moves on average two make a match. Two moves is the best possible outcome. If the user needed only two moves to make a match, he just turned over two cards and those two cards matched. With this in mind, I decided to subtract the difference between the number of moves a player needed to make a match and 2 from his base score.
 
 Let's look at an example to see how the points are calculated:
 Let's say the user needed 30 seconds and 12 moves to make a match.
@@ -288,6 +291,11 @@ function calc_points(total_seconds) {
         points += (60 - total_seconds);
     }
 
+    // The user always gets at least one point for every match
+    if (points <= 0) {
+        points = 1;
+    }
+
     // UPDATE TOTAL POINTS
     total_points += points;
     points_element.innerHTML = total_points;
@@ -295,13 +303,14 @@ function calc_points(total_seconds) {
 ```
 
 Below the grid with the game statistics, a device-responsive grid with the 12 memory cards is displayed. The cards are all turned face-down initially (meaning: The value of the key "back", which is a link to a picture, of every dictionary is shown).
-The whole game is programmed with JavaScript. First, and eventListener is added to every card. The user is than able to turn over two different cards. He can't turn over the same card twice. After two cards were turned over, a function called "check_match()", is being called to check if the user found two matching cards or not. If he did, the border of these two cards will turn green for a few moments and the timer and move variables are reset back to 0. The user now has access to the gameboard again and is able to click on the next two cards.
+The whole game is programmed with JavaScript. First, and eventListener is added to every card. The user is than able to turn over two different cards. He can't turn over the same card twice. After two cards were turned over, a function called "check_match()" is being called to check if the user found two matching cards or not. If he did, the border of these two cards turns green for a few moments and the timer and move variables are reset back to 0. The user now has access to the gameboard again and is able to click on the next two cards.
 If the user found no match, the cards will be turned facedown again and the user is than able to select two new cards.
-Once the user founds all matches, a function called "end_game()" is executed. A modal pops up on the screen, which shows how many times the user has to play the game to win the next badge. Once the user closes that modal, another modal pops up. This modal shows the user's score. If the user scored a new highscore, a picture and a short texts "congratualte" him. Integrated into this second modal is a hidden form with two fields. The values of these two fields ("score" and "timesPlayed") are "filled out" by JavaScript. Once the user closes the form, the data is submitted to the server and than stored in a database.
+
+Another similarity in terms of style and usability of the different games within the app is the process that the user is led through at the end of a game. Once the game ends (In the memory game that means specifically: Once the user found all matches), a function called "end_game()" is executed. A modal pops up on the screen, which shows how many times the user has to play the game to win the next badge. Once the user closes that modal, another modal pops up. This modal shows the user's score. If the user scored a new highscore, a picture and a short texts "congratualte" him for his achievement. Integrated into this second modal is a hidden form with two fields. The values of these two fields ("score" and "timesPlayed") are "filled out" by JavaScript. Once the user closes the modal, the data is submitted to the route of the game via POST and than stored in a database.
 
 ```jinja
 <!-- Form for submitting user score and times played, value attributes of input tags are filled by JS -->
-<form action="/memory" method="post">
+<form action="/{{ game }}" method="post">
     <input type="hidden" id="scoreInput" name="score" value="" />
     <input type="hidden" id="timesPlayedInput" name="timesPlayed" value="" />
     <button type="submit" class="my-auto close-button" data-dismiss="modal" aria-label="Close">
@@ -315,6 +324,73 @@ Once the user founds all matches, a function called "end_game()" is executed. A 
 score_input.value = total_points;
 times_played_input.value = times_played;
 ```
+
+#### "/puzzle" (puzzle.html)
+
+The second game, which is integrated into the app, is a sliding puzzle game with nine tiles. The task of the user is to bring the initally jumbled tiles back in the correct order. The solved puzzle shows a picture of the main characters of the show. To create the sliding puzzle, I took that picture and cut it into 9 even sized "tiles", which are stored on the server as png-images.
+In app.py, the "puzzle-tiles", which are initially stored in a list, are "mixed up" and than passed to the Jinja template. In the "mix up process" it is important to make sure that a "solvable mix" is created. A sliding puzzle with an odd number of tiles is only solvable, if the number of inversions in the tiles is even. Let's look at an example:
+
+For this example we assume, that the correct order of the pieces is [1, 2, 3, 4, 5, 6, 7, 8, 9].
+An inversion occurs everytime, a tile shows up "behind" another tile, even though it is supposed to appear "in front" of that other tile. Let's look at the following order: [1, 2, 3, 4, 6, 8, 5, 7]. In this list, the tiles 1, 2, 3 and 4 are already in the correct order, which means: No inversions. Let's focus on the rest of the list: [6, 8, 5, 7]. The "5" is the smallest number in that list. It shows up "behind" the "6", even though it's supposed to show up "in front" of the "6". This means: 6-5 is an inversion! 5 is also greater than 8, which means that we have a second inversion: 8-5. The third and last inversion in our list is 8-7. The number "7" appears after the "8" in our list, even though it is supposed to appear "in front of" the "8". Because a sliding puzzle with an odd number of tiles is only solvable, if the number of inversions is even, the order we created for the puzzle tiles would essentialy create an unsolvable sliding puzzle.
+
+To make sure that the puzzle the user eventually has to solve is solvable, I used the following while-loop in app.py:
+
+```python
+ # "Shuffle" pieces in a solvable way
+''' https://www.cs.princeton.edu/courses/archive/spring21/cos226/assignments/8puzzle/specification.php
+"Given a board, an inversion is any pair of tiles i and j where i < j but i appears after j [on the board]"
+Puzzle with odd number of pieces (we have 9 pieces): Puzzle is solvable when number of inversions is even'''
+blank_piece = 9
+is_solvable = False
+
+# While puzzle unsolvable
+while is_solvable == False:
+    # Set number of inversions to 0
+    inversions = 0
+
+    # "Shuffle" pieces and check if solvable
+    random.shuffle(pieces)
+
+    # Compare pieces with one another
+    for i in range(len(pieces)):
+        for j in range(i + 1, len(pieces)):
+            # The two for-loops make sure, that i is always < j
+            # If the number at position i is greater than the number at position j, we have an inversion
+            # When counting inversions, we have to ignore the blank tile (piece 9 in our example)
+            if pieces[j] != blank_piece and pieces[i] != blank_piece and pieces[i] > pieces[j]:
+                inversions += 1
+
+    # After we compared the pieces with one another:
+    # If the number of inversions is even, the puzzle is solvable
+    if inversions % 2 == 0:
+        is_solvable = True
+```
+
+Once the puzzle tiles are in a solvable order, the list with the tiles is passed to the Jinja template for the page. The puzzle game itself was coded with JavaScript. To track dragging events of the puzzle tiles, an event listener for each possible dragging event is added to every puzzle piece at the beginning of the game.
+
+```JavaScript
+puzzle_pieces.forEach(piece => {
+    piece.addEventListener('dragstart', start);
+    piece.addEventListener('dragover', over);
+    piece.addEventListener('dragenter', enter);
+    piece.addEventListener('dragleave', leave);
+    piece.addEventListener('drop', drop);
+    piece.addEventListener('dragend', end);
+});
+```
+
+Once the user starts dragging a tile, the dragged piece is stored in a variable called "dragged_piece". If the user tries to drop the dragged piece onto another puzzle-piece, this piece is also stored in a variable called "swapped_piece".
+
+The most important eventlistener is the dragend eventlistener. The function "end" specifies what happens when the dragend event is fired, which means: This function specifies what happens after the user drops the dragged tile onto another tile. "Swapping" two tiles in a sliding puzzle game is only allowed under the following circumstances:
+
+1. The dragged piece can only be swapped, if the swapped piece is the blank piece! In our case, the blank piece of the puzzle is called "piece-09". "Piece-09" is just a completely grey png-picture.
+2. The dragged piece can only be swapped with the blank piece, if the blank piece is either directly above, below, to the left or to the right of the dragged piece.
+
+In the "end"-function I made sure that both conditions are always fulfilled, when the user tries to swap two tiles.
+
+Whenever the user swaps two puzzle tiles successfully, a function called "check_order" is executed. This function checks if all tiles of the puzzle are in the correct order. If they are, the user solved the puzzle and the game ends.
+
+As in the memory-game two modals displaying the user's accompishments show up at the end of the game. By closing the second modal, the user submits the game data via POST to the server. That data is than stored in a database table.
 
 ## Installation:
 1. Download the files

@@ -3,11 +3,9 @@ import json
 import random
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, redirect, render_template, request, session, url_for #flash
 from flask_session import Session
-from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime
 from functools import wraps
 
 # Configure application
@@ -25,6 +23,7 @@ db = SQL("sqlite:///friends_webapp.db")
 # Type in the tablenames of the tables, where the game data for any specific game is stored
 # Example: I want to add the game "memory" and the data of that game is stored in the table "memory"
 games=["memory", "puzzle"]
+
 
 @app.after_request
 def after_request(response):
@@ -228,10 +227,18 @@ def membersarea():
     for game in games:
         # Get gamedata for current game and add the dictionary with the data to the gamedata list
         gamedata.append(get_gamedata(game))
-        
+
+    # Calculate accumulated highscore and total number of badges
+    accum_highscore = 0
+    total_badges = 0
+    for game in gamedata:
+        accum_highscore += game["highscore"]
+        total_badges += len(game["badges"])
+
     # Store links to medal images in list to pass the list to the template
     medal_pics = ["bronze_medal_tiny.png", "silver_medal_tiny.png", "gold_medal_tiny.png"]
-    return render_template("membersarea.html", username=username, gamedata=gamedata, medal_pics=medal_pics, games=games)
+
+    return render_template("membersarea.html", username=username, accum_highscore=accum_highscore, total_badges=total_badges, gamedata=gamedata, medal_pics=medal_pics, games=games)
 
 
 def get_gamedata(game):
@@ -324,11 +331,11 @@ def insert_user_stats(game):
     times_played = int(request.form.get("timesPlayed"))
 
     # Calc current badge
-    if (times_played < 2):
+    if times_played < 2:
         current_badge = "None"
-    elif (times_played < 5):
+    elif times_played < 5:
         current_badge = "Bronze"
-    elif (times_played < 10):
+    elif times_played < 10:
         current_badge = "Silver"
     else:
         current_badge = "Gold"
@@ -343,7 +350,7 @@ def insert_user_stats(game):
     # If user played before, update data
     else:
         # If user produced new highscore, update data and insert score into highscore column
-        if (user_gamedata[0]["highscore"]) <= score:
+        if user_gamedata[0]["highscore"] <= score:
             db.execute("UPDATE ? SET highscore = ?, times_played = ?, current_badge = ? WHERE user_id = (SELECT id FROM users WHERE id = ?)", game, score, times_played, current_badge, session["user_id"])
 
         # If no new highscore, update data, but leave highscore column as it is    
@@ -372,18 +379,15 @@ def puzzle():
         for piece in range(9):
             pieces.append(piece + 1)
 
-        # Copy list to create puzzle
-        #pieces = correct_order.copy()
-        #pieces = [1, 2, 3, 4, 5, 6, 7, 9, 8]
-
         # "Shuffle" pieces in a solvable way
         ''' https://www.cs.princeton.edu/courses/archive/spring21/cos226/assignments/8puzzle/specification.php
         "Given a board, an inversion is any pair of tiles i and j where i < j but i appears after j [on the board]"
         Puzzle with odd number of pieces (we have 9 pieces): Puzzle is solvable when number of inversions is even'''
+        blank_piece = 9
         is_solvable = False
 
         # While puzzle unsolvable
-        while (is_solvable == False):
+        while is_solvable == False:
             # Set number of inversions to 0
             inversions = 0
 
@@ -395,12 +399,13 @@ def puzzle():
                 for j in range(i + 1, len(pieces)):
                     # The two for-loops make sure, that i is always < j
                     # If the number at position i is greater than the number at position j, we have an inversion
-                    if (pieces[i] > pieces[j]):
+                    # When counting inversions, we have to ignore the blank tile (piece 9 in our example)
+                    if pieces[j] != blank_piece and pieces[i] != blank_piece and pieces[i] > pieces[j]:
                         inversions += 1
 
             # After we compared the pieces with one another:
             # If the number of inversions is even, the puzzle is solvable
-            if (inversions % 2 == 0):
+            if inversions % 2 == 0:
                 is_solvable = True
 
         # Get current user stats from game table
@@ -440,4 +445,63 @@ def leaderboard():
         # Finally: Add data of the current game to the complete gamedata list
         gamedata.append(current_game_data)
 
-    return render_template("leaderboard.html", gamedata=gamedata, games=games)
+    # Generate overall table and place it at the first position of the gamedata list
+    overall_results = generate_overall_table(gamedata)
+    gamedata.insert(0, overall_results)
+
+    return render_template("leaderboard.html", gamedata=gamedata)
+
+
+def generate_overall_table(gamedata):
+    '''At the first glance, this function looks more complex than it needs to be, but this has a reason.
+    My goal was to generate the overall table as a dictionary that looks exactly like the dictionaries for 
+    each game in the gamedata table. This is beneficial, because I don't have to create more Java Script and 
+    HTML for the leaderboard route, just to display the overall table. The overall table can be handled exactly
+    like all other tables with game data. When I place the data of this overall table in the first position of the gamedata
+    list, the overall table shows up at the top of the page without me having to add anything to the JS and HTML'''
+
+    # Create an empty list to store the overall results for each user
+    overall_results = []
+
+    # Iterate through the list of dictionaries in gamedata
+    for game in gamedata:
+        # Get the game name (i.e. "memory", "puzzle"...)
+        # The game name is the one and only key in the game dictionary, which looks like this: {gamename: [{user 1 data}{user 2 data}]}
+        gamename = list(game.keys())[0]
+
+        # Loop through the list of user data for the current game
+        for userdata in game[gamename]:
+            # Get username from dictionary of userdata
+            username = userdata["username"]
+
+            # We have to find the position of the dictionary for our current user in the overall_results list
+            # Loop through list of dictionaries in overall_results
+            loop_counter = 0
+            for dict in overall_results:
+                # If we found the username of our user in the dict, we can break out of the loop
+                if dict["username"] == username:
+                    break
+                else:
+                    loop_counter += 1
+                     
+            # If we looped through the whole list and did not find our user, create a dict for him and append it to the overall results list
+            if loop_counter == len(overall_results) or overall_results == []:
+                user_results = {
+                    "username": username,
+                    "highscore": userdata["highscore"],
+                    "times_played": userdata["times_played"],
+                    "number_badges": userdata["number_badges"],
+                }
+                overall_results.append(user_results)
+            
+            # If we broke out of the loop before we reached the end of the overall_results list, that means:
+            # Our user already exists in the list
+            else:
+                # The dict, which contains the data of our user is at the position of the loop_counter in the overall results list
+                # Update user data
+                overall_results[loop_counter]["highscore"] += userdata["highscore"]
+                overall_results[loop_counter]["times_played"] += userdata["times_played"]
+                overall_results[loop_counter]["number_badges"] += userdata["number_badges"]
+
+    # Finally: Convert overall_results to a dictionary
+    return {"overall": overall_results}

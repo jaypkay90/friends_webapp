@@ -137,13 +137,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // For every move the user made to solve the puzzle, he looses 1 point
         total_points = base_points - moves;
-        if (total_points < 0) {
-            total_points = 0;
+
+        // If the user is able to solve the puzzle in less than 10 minutes, he gets 0.5 bonous points for every remaining second up to five minutes
+        if (total_seconds < 600) {
+            total_points += (600 - total_seconds) * 0.5;
         }
 
-        // If the user is able to solve the puzzle in less than 5 minutes, he gets 0.2 bonous points for every remaining second up to five minutes
-        if (total_seconds < 300) {
-            total_points += (300 - (total_seconds * 0.2));
+        // The user always gets at least one point in total
+        if (total_points <= 0) {
+            total_points = 1;
         }
 
         total_points = Math.ceil(total_points);
@@ -158,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function check_order() {
         // Go through the puzzle_cells
-        for (cell of puzzle_cells) {
+        for (const cell of puzzle_cells) {
             // Get the number of the puzzle cell and the number of the puzzle piece
             let cell_nr = parseInt(cell.id.split('-')[1]);
             let piece_element = cell.querySelector('img');
@@ -187,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
         solution_pic.classList.add('img-fluid');
         gameboard.appendChild(solution_pic);
         
-        // Change color of the gameboard to green
+        // Change color of the gameboard border to green
         gameboard.style.borderColor = '#198754';
 
         // Show congratulation text below the gameboard
@@ -310,7 +312,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // If no new highscore...
         if (total_points <= highscore) {
             score_img.src = `/static/img/score.png`;
-            display_score.textContent = `You scored ${total_points} points!`;
+            if (total_points > 1) {
+                display_score.textContent = `You scored ${total_points} points!`;
+            }
+            else {
+                display_score.textContent = `You scored ${total_points} point!`;
+            }
         }
 
         // If new highscore...
@@ -318,7 +325,12 @@ document.addEventListener('DOMContentLoaded', function() {
             new_highscore.classList.add("pt-3");
             new_highscore.textContent = `New Highscore!`;
             score_img.src = `/static/img/highscore.png`;
-            display_score.textContent = `You scored ${total_points} points!`;
+            if (total_points > 1) {
+                display_score.textContent = `You scored ${total_points} points!`;
+            }
+            else {
+                display_score.textContent = `You scored ${total_points} point!`
+            }
         }
     }
 

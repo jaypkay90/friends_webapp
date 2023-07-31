@@ -285,22 +285,12 @@ ul li.paginate_button.page-item:not(.next):not(.previous):not(.active) {
 }
 
 @media (min-width: 768px) {
-    /*.char-cont {
-        width: 720px;
-    } */
-
     /* Display content in the center of the screen on medium and large devices */
     .quiz-row {
         display: flex;
         align-items: center;
         min-height: 100vh;
     }
-}
-
-@media (min-width: 576px) {
-    /* .container-max-sm {
-        width: 540px;
-    } */
 }
 
 @media (max-width: 992px) {
