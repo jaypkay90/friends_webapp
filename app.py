@@ -6,14 +6,17 @@ from cs50 import SQL
 from flask import Flask, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
+from dotenv import load_dotenv
 
 from tools import auth_required, login_required
 
 # Configure application
 app = Flask(__name__)
 
-# Load configuration from file specified by APP_CONFIG environment variable
-app.config.from_envvar('APP_CONFIG')
+# Load configuration from .env file and configure app
+load_dotenv()
+app.config["SESSION_PERMANENT"] = os.getenv("SESSION_PERMANENT")
+app.config["SESSION_TYPE"] = os.getenv("SESSION_TYPE")
 
 # Start Flask session
 Session(app)
