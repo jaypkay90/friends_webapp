@@ -14,7 +14,7 @@ For users who are not logged in, the app looks mostly like a static website with
 #### "/" (index.html)
 
 The main route shows a carousel with pictures of the show's main characters on the top of the page. The carousel was integrated with the help of Bootstrap.
-Below the carousel is a text paragraph with basic information about the show and a grid of cards. Each card contains a picture of one of the main characters and a link to a page with a character description. The information about the characters were stored in a database called. Python reads the information about every character from the database once someone reaches out via GET. The information are than stored in a list of dictionaries and ultimately passed to the Jinja template. I initialized a for-loop in the Jinja template, which loops through the list of characters and creates one card for every character in the list.
+Below the carousel is a text paragraph with basic information about the show and a grid of cards. Each card contains a picture of one of the main characters and a link to a page with a character description. The information about the characters were stored in a database. Python reads the information about every character from the database once someone reaches out via GET. The information are than stored in a list of dictionaries and ultimately passed to the Jinja template. I initialized a for-loop in the Jinja template, which loops through the list of characters and creates one card for every character in the list.
 
 ```python
  # Get character information from characters table
@@ -224,8 +224,8 @@ function add_table_heading(gamename) {
     table_heading.classList.add('friends-font', 'margin-bottom-20')
 
     // Capitalize the first letter of the game name
-    // game.charAt(0).toUpperCase(): Convert first letter of game name to uppercase
-    // game.slice(1): Take the game name and slice of the first letter
+    // gamename.charAt(0).toUpperCase(): Convert first letter of game name to uppercase
+    // gamename.slice(1): Take the game name and slice of the first letter
     game_first_cap = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
     // Put capitalized game name into h3-Element
@@ -303,7 +303,7 @@ function calc_points(total_seconds) {
 ```
 
 Below the grid with the game statistics, a device-responsive grid with the 12 memory cards is displayed. The cards are all turned face-down initially (meaning: The value of the key "back", which is a link to a picture, of every dictionary is shown).
-The whole game is programmed with JavaScript. First, and eventListener is added to every card. The user is than able to turn over two different cards. He can't turn over the same card twice. After two cards were turned over, a function called "check_match()" is being called to check if the user found two matching cards or not. If he did, the border of these two cards turns green for a few moments and the timer and move variables are reset back to 0. The user now has access to the gameboard again and is able to click on the next two cards.
+The whole game is programmed with JavaScript. First, and eventListener is added to every card. The user is than able to turn over two different cards. He can't turn over the same card twice. After two cards were turned over, a function called "check_match()" is being called to check if the user found two matching cards or not. If he did, the borders of these two cards turn green for a few moments and the timer and move variables are reset back to 0. The user now has access to the gameboard again and is able to click on the next two cards.
 If the user found no match, the cards will be turned facedown again and the user is than able to select two new cards.
 
 Another similarity in terms of style and usability of the different games within the app is the process that the user is led through at the end of a game. Once the game ends (In the memory game that means specifically: Once the user found all matches), a function called "end_game()" is executed. A modal pops up on the screen, which shows how many times the user has to play the game to win the next badge. Once the user closes that modal, another modal pops up. This modal shows the user's score. If the user scored a new highscore, a picture and a short texts "congratualte" him for his achievement. Integrated into this second modal is a hidden form with two fields. The values of these two fields ("score" and "timesPlayed") are "filled out" by JavaScript. Once the user closes the modal, the data is submitted to the route of the game via POST and than stored in a database.

@@ -3,17 +3,19 @@ import json
 import random
 
 from cs50 import SQL
-from flask import Flask, redirect, render_template, request, session, url_for
+from flask import Flask, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
-from functools import wraps
+
+from tools import auth_required, login_required
 
 # Configure application
 app = Flask(__name__)
 
-# Configure session to use filesystem (instead of signed cookies)
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
+# Load configuration from file specified by APP_CONFIG environment variable
+app.config.from_envvar('APP_CONFIG')
+
+# Start Flask session
 Session(app)
 
 # Configure usability of SQLite database
@@ -34,19 +36,8 @@ def after_request(response):
     return response
 
 
-# Function to check if user is logged in when he reaches a protected route
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-
-        # If user is not logged in, redirect to login page
-        if 'user_id' not in session:            
-            return redirect(url_for("login"))
-        return f(*args, **kwargs)
-    return decorated_function
-
-
 @app.route('/')
+@auth_required
 def index():
     # Get character information from characters table
     characters = db.execute("SELECT * FROM characters")
@@ -54,6 +45,7 @@ def index():
 
 
 @app.route('/characters/<name>')
+@auth_required
 def character_details(name):
     # Get basic information about the character from the charcters table to display in infobox
     details = db.execute("SELECT * FROM characters WHERE first_name = ?", name.capitalize())[0]
@@ -88,6 +80,7 @@ def character_details(name):
 
 
 @app.route('/seasons')
+@auth_required
 def seasons():
     # Read information about the different seasons from JSON file to display in seasons.html template
     with open('static/data/seasons_data.json') as file:
@@ -97,6 +90,7 @@ def seasons():
 
 
 @app.route('/quiz')
+@auth_required
 def quiz():
     # Read quiz questions (and solutions) from JSON file to display in quiz.html template
     with open('static/data/mini_quiz.json') as file:
@@ -107,6 +101,7 @@ def quiz():
 
 
 @app.route('/login', methods=['GET', 'POST'])
+@auth_required
 def login():
     # Log user in
     # Forget any user_id
@@ -149,6 +144,7 @@ def login():
 
 
 @app.route('/logout')
+@auth_required
 def logout():
     # Log user out
     # Forget any user_id
@@ -159,6 +155,7 @@ def logout():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@auth_required
 def register():
     # Register user
 
@@ -215,6 +212,7 @@ def register():
 
 
 @app.route('/membersarea')
+@auth_required
 @login_required
 def membersarea():
     # Get username from users table
@@ -276,6 +274,7 @@ def get_gamedata(game):
 
 
 @app.route('/memory', methods=['GET', 'POST'])
+@auth_required
 @login_required
 def memory():
     # If user reached out via POST (by submitting his score and times played via form)
@@ -362,6 +361,7 @@ def insert_user_stats(game):
 
 
 @app.route('/puzzle', methods=['GET', 'POST'])
+@auth_required
 @login_required
 def puzzle():
     # If user reached out via POST (by submitting his score and times played via form)
@@ -415,6 +415,7 @@ def puzzle():
 
 
 @app.route('/leaderboard')
+@auth_required
 @login_required
 def leaderboard():
     # Get username and gamedata from every registered user

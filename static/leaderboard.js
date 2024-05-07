@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		table_heading.classList.add('friends-font', 'margin-bottom-20')
 
 		// Capitalize the first letter of the game name
-		// game.charAt(0).toUpperCase(): Convert first letter of game name to uppercase
-		// game.slice(1): Take the game name and slice of the first letter
+		// gamename.charAt(0).toUpperCase(): Convert first letter of game name to uppercase
+		// gamename.slice(1): Take the game name and slice off the first letter
 		game_first_cap = gamename.charAt(0).toUpperCase() + gamename.slice(1);
 
 		// Put capitalized game name into h3-Element

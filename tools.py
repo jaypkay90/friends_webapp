@@ -1,4 +1,4 @@
-from flask import render_template, redirect, session, url_for, request
+from flask import render_template, redirect, session, url_for, request, current_app
 from functools import wraps
 
 # Authentication required to view the page
@@ -6,7 +6,7 @@ def auth_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         auth = request.authorization
-        if auth and auth.username == "user" and auth.password == "pass":
+        if auth and auth.username == current_app.config["SITE_USER"] and auth.password == current_app.config["SITE_PASSWORD"]:
             return f(*args, **kwargs)
         return render_template('access_denied.html'), 401, {'WWW-Authenticate': 'Basic realm="Login required!"'}
     return decorated_function
