@@ -7,7 +7,6 @@ def auth_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         auth = request.authorization
-        #if auth and auth.username == current_app.config["SITE_USER"] and auth.password == current_app.config["SITE_PASSWORD"]:
         if auth and auth.username == os.getenv("SITE_USER") and auth.password == os.getenv("SITE_PASSWORD"):
             return f(*args, **kwargs)
         return render_template('access_denied.html'), 401, {'WWW-Authenticate': 'Basic realm="Login required!"'}
