@@ -88,7 +88,7 @@
 						<div class="card-body text-center">
 							<h5 class="card-title friends-font">{{ character['first_name'] }}</h5>
 							<p class="card-text">{{ character['short_description'] }}</p>
-							<a href="characters/{{ character['first_name'] }}" class="btn btn-secondary">More about {{ character['first_name'] }}</a>
+							<a href="characters/{{ character['first_name'].lower() }}" class="btn btn-secondary">More about {{ character['first_name'] }}</a>
 						</div>
 					</div>
 				</div>
