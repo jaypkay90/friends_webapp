@@ -22,7 +22,7 @@ app.config["SESSION_TYPE"] = os.getenv("SESSION_TYPE")
 Session(app)
 
 # Configure usability of SQLite database
-db = SQL("sqlite:///friends_webapp.db")
+db = SQL("sqlite:///data/friends_webapp.db")
 
 # List of available games in the app
 # Type in the tablenames of the tables, where the game data for any specific game is stored
