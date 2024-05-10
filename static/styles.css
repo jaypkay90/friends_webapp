@@ -197,8 +197,8 @@ body {
 
 .mem-cell {
     width: calc(25% - 10px); /* Subtract margin, so that exactly four elements fit in one row of the gameboard */
-    height: calc(33,333% - 10px); /* Subtract margin, so that exactly 3 elements fit in one column of the gameboard */
-    margin: 3px; /* Create space around the memory card cell */
+    height: calc(33.333% - 10px); /* Subtract margin, so that exactly 3 elements fit in one column of the gameboard */
+    margin: 5px; /* Create space around the memory card cell */
     position: relative;
 }
 
