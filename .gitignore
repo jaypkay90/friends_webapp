@@ -1,0 +1,7 @@
+# Ignore .env file
+.env
+flask_session/
+How to configure App with Environmental Variables.txt
+Friends Forever Screenshots.docx
+Friends Forever Screenshots.pdf
+App on Render.com.txt
