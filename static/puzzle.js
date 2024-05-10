@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if the browser supports touch events
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+
     // Store puzzle cells and puzzle pieces in seperate lists
     const puzzle_cells = document.querySelectorAll('[id^="cell-"]');
     const puzzle_pieces = document.querySelectorAll('.puzzle-piece');
@@ -37,13 +40,38 @@ document.addEventListener('DOMContentLoaded', function() {
         // ... add eventListeners to puzzle_pieces to apply dragging and swapping ability
         start_timer();
         puzzle_pieces.forEach(piece => {
-            piece.addEventListener('dragstart', start);
-            piece.addEventListener('dragover', over);
-            piece.addEventListener('dragenter', enter);
-            piece.addEventListener('dragleave', leave);
-            piece.addEventListener('drop', drop);
-            piece.addEventListener('dragend', end);
+            // If no touch device: Add drag event listeners
+            if (!isTouchDevice) {
+                piece.addEventListener('dragstart', start);
+                piece.addEventListener('dragover', over);
+                piece.addEventListener('dragenter', enter);
+                piece.addEventListener('dragleave', leave);
+                piece.addEventListener('drop', drop);
+                piece.addEventListener('dragend', end);
+            }
+
+            // Dealing with a touch device: Add click listener
+            else {
+                piece.addEventListener('click', mobile_click)
+            }
         });
+    }
+
+    function mobile_click() {
+        // We are on a touch device
+        dragged_piece = this;
+
+        // Find the blank tile (piece 09)
+        for (const cell of puzzle_cells) {
+            const piece_in_cell = cell.querySelector('.puzzle-piece');
+            if (piece_in_cell.src.includes("puzzle-09.png")) {
+                swapped_piece = piece_in_cell;
+                break;
+            }
+        }
+
+        // Swapp dragged_piece with swapped_piece if allowed
+        execute_swap_if_allowed();
     }
 
     function start() {
@@ -83,6 +111,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        execute_swap_if_allowed();
+    }
+
+    function execute_swap_if_allowed() {
+        /* Execute swap of dragged and swapped piece if allowed */
+
         // Get the cell number of the dragged and swapped piece
         let dragged_cell = dragged_piece.parentNode.id;
         let swapped_cell = swapped_piece.parentNode.id;
@@ -99,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 1. Both are in the same col AND the swapped piece is either one row above or below the dragged_piece
         let move_up = (swapped_row === dragged_row - 1) && (swapped_col === dragged_col);
         let move_down = (swapped_row === dragged_row + 1) && (swapped_col === dragged_col);
+
         // OR 2. Both are in the same row AND the swapped piece is in a col besides the dragged_piece
         let move_left = (swapped_col === dragged_col - 1) && (swapped_row === dragged_row);
         let move_right = (swapped_col === dragged_col + 1) && (swapped_row === dragged_row);
