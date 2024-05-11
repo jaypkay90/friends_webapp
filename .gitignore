@@ -1,6 +1,4 @@
 # Ignore .env file
 .env
-How to configure App with Environmental Variables.txt
-Friends Forever Screenshots.docx
-Friends Forever Screenshots.pdf
-App on Render.com.txt
+flask_session/
+01_IgnoreInGit/
