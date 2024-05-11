@@ -70,6 +70,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // If the user clicked on the blank tile: return
+        if (dragged_piece === swapped_piece) {
+            return;
+        }
+
         // Swapp dragged_piece with swapped_piece if allowed
         execute_swap_if_allowed();
     }
@@ -107,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // This function is executed after the dragged_piece was dropped (listener: 'dragend')
 
         // "Swapping" is only allowed with the "blank piece", wich is piece 09
-        if (!swapped_piece.src.includes("puzzle-09.png")) {
+        if (!swapped_piece.src.includes("puzzle-09.png") || dragged_piece === swapped_piece) {
             return;
         }
 
